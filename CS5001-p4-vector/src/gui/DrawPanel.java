@@ -26,20 +26,24 @@ public class DrawPanel extends JPanel {
  private int pressX = 0;
  private int pressY = 0;
 
- private Shape shape;
- private Shape dragShape;
+ private Shape drawShape;
+ private CShape selectedCShape;
+
  private Color color;
  private int shapeMode = Config.DRAW_LINE;
  private int mode = Config.DRAW_MODE;
 
  private boolean setFill = false;
+ private boolean resize = false;
 
  ArrayList<CShape> shapeList;
+ Rectangle2D.Double[] selections;
 
  public DrawPanel(Model model) {
 
   this.model = model;
   this.shapeList = model.getShapeList();
+  selections = new Rectangle2D.Double[4];
 
   this.setSize(800, 600);
   this.setBackground(Color.WHITE);
@@ -54,13 +58,34 @@ public class DrawPanel extends JPanel {
     pressY = e.getY();
     System.out.println("Mouse clicked " + e.getX() + " " + e.getY());
 
-    for (int i = 0; i < shapeList.size(); i++) {
-     if (shapeList.get(i).getShape().contains(e.getX(), e.getY())) {
-      System.out.println("Hit position: " + i);
-     }
+    if (mode == Config.SELECT_MODE) {
+     selectedCShape = null;
+     for (int i = 0; i < shapeList.size(); i++) {
 
-     if (shapeList.get(i).getShape().intersects(e.getX() - 1, e.getY() - 1, e.getX() - 1, e.getY() + 1)) {
-      System.out.println("Intersect position: " + i);
+      if (shapeList.get(i).getShape() instanceof Line2D.Double) {
+       if (shapeList.get(i).getShape().intersects(e.getX() - 1, e.getY() - 1, 3, 3)) {
+        System.out.println("ololl");
+        selectedCShape = shapeList.get(i);
+
+       }
+      }
+      else {
+       if (shapeList.get(i).getShape().contains(e.getX(), e.getY())) {
+        System.out.println("Hit position: " + i);
+        selectedCShape = shapeList.get(i);
+       }
+      }
+
+      if (selectedCShape != null && !selectedCShape.equals(null)) {
+       drawSelections();
+      }
+      else {
+       selections = new Rectangle2D.Double[4];
+      }
+
+      //     if (shapeList.get(i).getShape().intersects(e.getX() - 1, e.getY() - 1, e.getX() - 1, e.getY() + 1)) {
+      //      System.out.println("Intersect position: " + i);
+      //     }
      }
     }
 
@@ -68,23 +93,24 @@ public class DrawPanel extends JPanel {
 
    public void mouseReleased(MouseEvent e) {
     System.out.println("Mouse released " + e.getX() + " " + e.getY());
+    resize = false;
 
     if (mode == Config.DRAW_MODE) {
      switch (shapeMode) {
       case Config.DRAW_LINE: {
-       shape = drawLine(pressX, pressY, e.getX(), e.getY());
+       drawShape = drawLine(pressX, pressY, e.getX(), e.getY());
        break;
       }
 
       case Config.DRAW_RECT: {
        System.out.println("rect");
-       shape = drawRect(pressX, pressY, e.getX(), e.getY());
+       drawShape = drawRect(pressX, pressY, e.getX(), e.getY());
        break;
       }
 
      }
-     model.addShape(new CShape(shape, color));
-     shape = null;
+     model.addShape(new CShape(drawShape, color));
+     drawShape = null;
     }
     repaint();
 
@@ -103,37 +129,62 @@ public class DrawPanel extends JPanel {
    }
   });
   addMouseMotionListener(new MouseMotionListener() {
+
    public void mouseDragged(MouseEvent e) {
     if (mode == Config.DRAW_MODE) {
      switch (shapeMode) {
       case Config.DRAW_LINE: {
-       shape = drawLine(pressX, pressY, e.getX(), e.getY());
+       drawShape = drawLine(pressX, pressY, e.getX(), e.getY());
        break;
       }
       case Config.DRAW_RECT: {
-       System.out.println("rectDrag");
-       shape = drawRect(pressX, pressY, e.getX(), e.getY());
+       drawShape = drawRect(pressX, pressY, e.getX(), e.getY());
        break;
       }
 
      }
     }
 
-    else if (mode == Config.SELECT_MODE) {
-     //     int lastShape=-1;
-     for (int i = 0; i < shapeList.size(); i++) {
-      if (shapeList.get(i).getShape().contains(e.getX(), e.getY())) {
-       System.out.println("Hit position: " + i);
-       //       lastShape = i;
-       dragShape = shapeList.get(i).getShape();
+    else if (mode == Config.SELECT_MODE && selectedCShape != null && !selectedCShape.equals(null)) {
+
+     if (selectedCShape.getShape() instanceof Rectangle2D.Double) {
+      Rectangle2D.Double rect = (Rectangle2D.Double) selectedCShape.getShape();
+
+      if (selections[3].contains(e.getX(), e.getY()) && resize == false) {
+       System.out.println("pups");
+       resize = true;
       }
+
+      if (resize == true) {
+       rect.setRect(rect.getX(), rect.getY(), e.getX() - rect.getX(), e.getY() - rect.getY());
+      }
+
+      else {
+       rect.setRect(e.getX() - rect.getWidth() / 2, e.getY() - rect.getHeight() / 2, rect.getWidth(), rect.getHeight());
+      }
+
+      // selection 
+      drawSelections();
      }
-     //     if (lastShape >= 0){
-     //      
-     //     }
-     if (dragShape instanceof Rectangle2D.Double) {
-      Rectangle2D.Double rect = (Rectangle2D.Double) dragShape;
-      rect.setRect(e.getX() - rect.getWidth() / 2, e.getY() - rect.getHeight() / 2, rect.getWidth(), rect.getHeight());
+
+     else if (selectedCShape.getShape() instanceof Line2D.Double) {
+      Line2D.Double line = (Line2D.Double) selectedCShape.getShape();
+
+      if (selections[3].contains(e.getX(), e.getY()) && resize == false) {
+       System.out.println("pups");
+       resize = true;
+      }
+
+      if (resize == true) {
+       line.setLine(line.getX1(), line.getY1(), e.getX(), e.getY());
+      }
+      
+      else {
+       int diffX = (int) (line.getX2()-line.getX1());
+       int diffY = (int) (line.getY2()-line.getY1());
+       line.setLine(e.getX()-(diffX+1)/2, e.getY()-(diffX+1)/2, e.getX()+diffX/2, e.getY()+diffY/2);
+      }
+      drawSelections();
      }
 
     }
@@ -153,6 +204,7 @@ public class DrawPanel extends JPanel {
   Graphics2D g = (Graphics2D) graphics;
   super.paintComponent(g);
 
+  // paint the shapes
   for (int i = 0; i < model.getShapeList().size(); i++) {
    CShape c = model.getShapeList().get(i);
    if (c != null && c.getColor() != null && c.getShape() != null && c.isVisible() == true) {
@@ -161,11 +213,21 @@ public class DrawPanel extends JPanel {
    }
   }
 
-  if (shape != null) {
+  // paint the current drawShape
+  if (drawShape != null && !drawShape.equals(null)) {
    g.setColor(color);
-   g.draw(shape);
+   g.draw(drawShape);
   }
 
+  // add the selection marks
+  if (selections != null && !selections.equals(null) && selectedCShape != null && !selectedCShape.equals(null)) {
+   for (int i = 0; i < selections.length; i++) {
+    if (selections[i] != null && !selections[i].equals(null)) {
+     g.setColor(Color.BLACK);
+     g.draw(selections[i]);
+    }
+   }
+  }
  }
 
  Color getColor() {
@@ -182,6 +244,14 @@ public class DrawPanel extends JPanel {
 
  public void setMode(int mode) {
   this.mode = mode;
+ }
+
+ public CShape getSelectedCShape() {
+  return selectedCShape;
+ }
+
+ public void setSelectedCShape(CShape selectedCShape) {
+  this.selectedCShape = selectedCShape;
  }
 
  private Line2D.Double drawLine(int x1, int y1, int x2, int y2) {
@@ -201,6 +271,17 @@ public class DrawPanel extends JPanel {
   else {
    return new Rectangle2D.Double(x1, y1, x2 - x1, y2 - y1);
   }
+ }
+
+ private void drawSelections() {
+  selections[0] = new Rectangle2D.Double(selectedCShape.getShape().getBounds().getX() - 3,
+    selectedCShape.getShape().getBounds().getY() - 3, 6, 6);
+  selections[1] = new Rectangle2D.Double(selectedCShape.getShape().getBounds().getMaxX() - 3,
+    selectedCShape.getShape().getBounds().getY() - 3, 6, 6);
+  selections[2] = new Rectangle2D.Double(selectedCShape.getShape().getBounds().getX() - 3,
+    selectedCShape.getShape().getBounds().getMaxY() - 3, 6, 6);
+  selections[3] = new Rectangle2D.Double(selectedCShape.getShape().getBounds().getMaxX() - 3,
+    selectedCShape.getShape().getBounds().getMaxY() - 3, 6, 6);
  }
 
 }

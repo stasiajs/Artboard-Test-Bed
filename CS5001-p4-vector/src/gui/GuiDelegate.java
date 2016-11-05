@@ -97,11 +97,13 @@ public class GuiDelegate implements Observer {
   });
   undo.addActionListener(new ActionListener() {
    public void actionPerformed(ActionEvent e) {
+    drawPanel.setSelectedCShape(null);
     model.undo();
    }
   });
   redo.addActionListener(new ActionListener() {
    public void actionPerformed(ActionEvent e) {
+    drawPanel.setSelectedCShape(null);
     model.redo();
    }
   });
@@ -130,7 +132,8 @@ public class GuiDelegate implements Observer {
   JButton circleButton = new JButton("Circle");
   JButton ellipseButton = new JButton("Ellipse");
   JButton hexButton = new JButton("Hexagon");
-  
+  JButton orientationButton = new JButton("Change orientation");
+
   drawButton.setEnabled(false);
 
   drawButton.addActionListener(new ActionListener() {
@@ -138,6 +141,8 @@ public class GuiDelegate implements Observer {
    @Override
    public void actionPerformed(ActionEvent e) {
     drawPanel.setMode(Config.DRAW_MODE);
+    drawPanel.setSelectedCShape(null);
+    drawPanel.repaint();
     drawButton.setEnabled(false);
     selectButton.setEnabled(true);
    }
@@ -186,6 +191,9 @@ public class GuiDelegate implements Observer {
   leftBar.add(squareButton);
   leftBar.add(rectButton);
 
+  leftBar.addSeparator();
+  leftBar.add(orientationButton);
+
  }
 
  private void setupDownBar() {
@@ -198,7 +206,12 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-    drawPanel.setColor(JColorChooser.showDialog(jColorChooser, "Choose Color", drawPanel.getColor()));
+    Color col = JColorChooser.showDialog(jColorChooser, "Choose Color", drawPanel.getColor());
+    drawPanel.setColor(col);
+    if (drawPanel.getSelectedCShape() != null) {
+     drawPanel.getSelectedCShape().setColor(col);
+     drawPanel.repaint();
+    }
     colorButton.setBackground(drawPanel.getColor());
    }
   });
