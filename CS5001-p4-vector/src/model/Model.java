@@ -3,6 +3,7 @@ package model;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.Stack;
 
 import shapes.CShape;
 import sun.security.provider.SHA;
@@ -10,59 +11,38 @@ import sun.security.provider.SHA;
 public class Model extends Observable {
 
  private ArrayList<CShape> shapeList;
+ private Stack<CShape> redoable;
  private Color currentColor;
  private int lineStrength;
 
- private int undoPos;
-
  public Model() {
   shapeList = new ArrayList<CShape>();
-  undoPos = 0;
+  redoable = new Stack<CShape>();
+
   currentColor = Color.BLACK;
   lineStrength = 1;
+
  }
 
  public void undo() {
-
-  if (undoPos >= 0 && shapeList.size() > 0) {
-   shapeList.get(undoPos).setVisible(false);
+  if (shapeList.size() > 0) {
+   redoable.push(shapeList.remove(shapeList.size() - 1));
    setChanged();
    notifyObservers();
-   
-   System.out.println("undo before: "+undoPos);
-   
-   if (undoPos > 0) {
-    undoPos--;
-   }
-
   }
-
  }
 
  public void redo() {
-  if (undoPos < shapeList.size()) {
-   
-   if (undoPos < shapeList.size() - 1) {
-    undoPos++;
-   }
-   
-   shapeList.get(undoPos).setVisible(true);
+  if (redoable.size() > 0) {
+   shapeList.add(redoable.pop());
    setChanged();
    notifyObservers();
-   
-   System.out.println("redo before: "+undoPos);
-
-
-
   }
  }
 
  public void addShape(CShape cshape) {
-  for (int i = shapeList.size() - 1; i > undoPos; i--) {
-   shapeList.remove(i);
-  }
+  redoable.removeAllElements();
   shapeList.add(cshape);
-  undoPos = shapeList.size() - 1;
   setChanged();
   notifyObservers();
  }

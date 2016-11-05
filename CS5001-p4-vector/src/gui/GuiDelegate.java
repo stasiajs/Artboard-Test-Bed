@@ -3,11 +3,13 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
@@ -21,7 +23,7 @@ import javax.swing.SwingUtilities;
 
 import model.Model;
 
-public class GuiDelegate implements Observer{
+public class GuiDelegate implements Observer {
  private Model model;
 
  private JFrame jFrame;
@@ -114,9 +116,75 @@ public class GuiDelegate implements Observer{
  }
 
  private void setupLeftBar() {
+
+  leftBar.setLayout(new BoxLayout(leftBar, BoxLayout.Y_AXIS));
+
+  JLabel modeLabel = new JLabel("Mode: ");
+  JButton drawButton = new JButton("Draw Mode");
+  JButton selectButton = new JButton("Select Mode");
+
   JLabel label = new JLabel("SideBar: ");
+  JButton lineButton = new JButton("Line");
+  JButton squareButton = new JButton("Square");
+  JButton rectButton = new JButton("Rectangle");
+  JButton circleButton = new JButton("Circle");
+  JButton ellipseButton = new JButton("Ellipse");
+  JButton hexButton = new JButton("Hexagon");
+  
+  drawButton.setEnabled(false);
+
+  drawButton.addActionListener(new ActionListener() {
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+    drawPanel.setMode(Config.DRAW_MODE);
+    drawButton.setEnabled(false);
+    selectButton.setEnabled(true);
+   }
+  });
+
+  selectButton.addActionListener(new ActionListener() {
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+    drawPanel.setMode(Config.SELECT_MODE);
+    selectButton.setEnabled(false);
+    drawButton.setEnabled(true);
+   }
+  });
+
+  lineButton.addActionListener(new ActionListener() {
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+    drawPanel.setDrawMode(Config.DRAW_LINE);
+   }
+  });
+
+  squareButton.addActionListener(new ActionListener() {
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+    drawPanel.setDrawMode(Config.DRAW_SQUARE);
+   }
+  });
+
+  rectButton.addActionListener(new ActionListener() {
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+    drawPanel.setDrawMode(Config.DRAW_RECT);
+   }
+  });
+
+  leftBar.add(modeLabel);
+  leftBar.add(drawButton);
+  leftBar.add(selectButton);
 
   leftBar.add(label);
+  leftBar.add(lineButton);
+  leftBar.add(squareButton);
+  leftBar.add(rectButton);
 
  }
 
@@ -132,7 +200,6 @@ public class GuiDelegate implements Observer{
    public void actionPerformed(ActionEvent e) {
     drawPanel.setColor(JColorChooser.showDialog(jColorChooser, "Choose Color", drawPanel.getColor()));
     colorButton.setBackground(drawPanel.getColor());
-
    }
   });
 
@@ -149,14 +216,7 @@ public class GuiDelegate implements Observer{
   // in the caller's thread 
   SwingUtilities.invokeLater(new Runnable() {
    public void run() {
-    System.out.println("Tried1 to repaint");
-    //    outputField.setText(model.getText());
-    System.out.println(model.getShapeList().size());
-    
-//    drawPanel.repaint();
-    drawPanel.paintComponent(drawPanel.getGraphics());
-    
-    System.out.println("Tried2 to repaint");
+    drawPanel.repaint();
    }
   });
  }

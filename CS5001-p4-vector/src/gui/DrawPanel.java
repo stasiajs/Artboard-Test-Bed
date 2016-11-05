@@ -9,9 +9,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import model.Model;
@@ -19,23 +21,25 @@ import shapes.CShape;
 
 public class DrawPanel extends JPanel {
 
- Model model;
+ private Model model;
 
- int clickX = 0;
- int clickY = 0;
+ private int pressX = 0;
+ private int pressY = 0;
 
- int releaseX = 0;
- int releaseY = 0;
-
- Shape shape;
+ private Shape shape;
+ private Shape dragShape;
  private Color color;
+ private int shapeMode = Config.DRAW_LINE;
+ private int mode = Config.DRAW_MODE;
 
- // ArrayList<CShape> ShapeList;
+ private boolean setFill = false;
+
+ ArrayList<CShape> shapeList;
 
  public DrawPanel(Model model) {
 
   this.model = model;
-  //  this.ShapeList = model.getShapeList();
+  this.shapeList = model.getShapeList();
 
   this.setSize(800, 600);
   this.setBackground(Color.WHITE);
@@ -46,20 +50,42 @@ public class DrawPanel extends JPanel {
   addMouseListener(new MouseListener() {
 
    public void mouseClicked(MouseEvent e) {
-    clickX = e.getX();
-    clickY = e.getY();
+    pressX = e.getX();
+    pressY = e.getY();
     System.out.println("Mouse clicked " + e.getX() + " " + e.getY());
+
+    for (int i = 0; i < shapeList.size(); i++) {
+     if (shapeList.get(i).getShape().contains(e.getX(), e.getY())) {
+      System.out.println("Hit position: " + i);
+     }
+
+     if (shapeList.get(i).getShape().intersects(e.getX() - 1, e.getY() - 1, e.getX() - 1, e.getY() + 1)) {
+      System.out.println("Intersect position: " + i);
+     }
+    }
+
    }
 
    public void mouseReleased(MouseEvent e) {
-    //    paint(new Line2D.Double(clickX, clickY, e.getX(), e.getY()));
-    //    draw
     System.out.println("Mouse released " + e.getX() + " " + e.getY());
 
-    shape = new Line2D.Double(clickX, clickY, e.getX(), e.getY());
-    model.addShape(new CShape(shape, color));
-    shape = null;
+    if (mode == Config.DRAW_MODE) {
+     switch (shapeMode) {
+      case Config.DRAW_LINE: {
+       shape = drawLine(pressX, pressY, e.getX(), e.getY());
+       break;
+      }
 
+      case Config.DRAW_RECT: {
+       System.out.println("rect");
+       shape = drawRect(pressX, pressY, e.getX(), e.getY());
+       break;
+      }
+
+     }
+     model.addShape(new CShape(shape, color));
+     shape = null;
+    }
     repaint();
 
    }
@@ -72,47 +98,61 @@ public class DrawPanel extends JPanel {
 
    public void mousePressed(MouseEvent e) {
     System.out.println("Mouse pressed " + e.getX() + " " + e.getY());
-    clickX = e.getX();
-    clickY = e.getY();
+    pressX = e.getX();
+    pressY = e.getY();
    }
   });
   addMouseMotionListener(new MouseMotionListener() {
    public void mouseDragged(MouseEvent e) {
-    shape = new Line2D.Double(clickX, clickY, e.getX(), e.getY());
+    if (mode == Config.DRAW_MODE) {
+     switch (shapeMode) {
+      case Config.DRAW_LINE: {
+       shape = drawLine(pressX, pressY, e.getX(), e.getY());
+       break;
+      }
+      case Config.DRAW_RECT: {
+       System.out.println("rectDrag");
+       shape = drawRect(pressX, pressY, e.getX(), e.getY());
+       break;
+      }
+
+     }
+    }
+
+    else if (mode == Config.SELECT_MODE) {
+     //     int lastShape=-1;
+     for (int i = 0; i < shapeList.size(); i++) {
+      if (shapeList.get(i).getShape().contains(e.getX(), e.getY())) {
+       System.out.println("Hit position: " + i);
+       //       lastShape = i;
+       dragShape = shapeList.get(i).getShape();
+      }
+     }
+     //     if (lastShape >= 0){
+     //      
+     //     }
+     if (dragShape instanceof Rectangle2D.Double) {
+      Rectangle2D.Double rect = (Rectangle2D.Double) dragShape;
+      rect.setRect(e.getX() - rect.getWidth() / 2, e.getY() - rect.getHeight() / 2, rect.getWidth(), rect.getHeight());
+     }
+
+    }
 
     repaint();
-    //    System.out.println("Mouse dragged " + e.getX() + " " + e.getY());
    }
 
    public void mouseMoved(MouseEvent e) {
+
    }
   });
 
  }
 
- // public void paint(Graphics g) {
- //
- //  Graphics2D g2d = (Graphics2D) g;
- //
- //  //g2d.draw();
- //
- //  //Line2D line = new Line2D.Double (0, 0, 75, 75);
- //
- //  //  Graphics2D g2d = (Graphics2D) g;
- //  //  Line2D line = new Line2D.Double (0, 0, 75, 75);
- //  //  g2d.draw (line);
- //  //  Ellipse2D curve = new Ellipse2D.Double (10, 10, 20, 20);
- //  //  g2d.draw (curve);
- // }
-
  @Override
  public void paintComponent(Graphics graphics) {
   Graphics2D g = (Graphics2D) graphics;
   super.paintComponent(g);
-  
 
-  
-  
   for (int i = 0; i < model.getShapeList().size(); i++) {
    CShape c = model.getShapeList().get(i);
    if (c != null && c.getColor() != null && c.getShape() != null && c.isVisible() == true) {
@@ -120,32 +160,13 @@ public class DrawPanel extends JPanel {
     g.draw(c.getShape());
    }
   }
-  
+
   if (shape != null) {
    g.setColor(color);
    g.draw(shape);
   }
-  
-//  for (CShape c : model.getShapeList()) {
-//   if (c != null && c.getColor() != null && c.getShape() != null && c.isVisible() == true) {
-//    g.setColor(c.getColor());
-//    g.draw(c.getShape());
-//   }
-//  }
-
-
 
  }
- 
-// public void repaint() {
-//  super.repaint();
-//  for (CShape c : model.getShapeList()) {
-//   if (c != null && c.getColor() != null && c.getShape() != null && c.isVisible() == true) {
-//    g.setColor(c.getColor());
-//    g.draw(c.getShape());
-//   }
-//  }
-// }
 
  Color getColor() {
   return color;
@@ -155,7 +176,31 @@ public class DrawPanel extends JPanel {
   this.color = color;
  }
 
- // public void repaint() {
- //  
- // }
+ public void setDrawMode(int drawMode) {
+  this.shapeMode = drawMode;
+ }
+
+ public void setMode(int mode) {
+  this.mode = mode;
+ }
+
+ private Line2D.Double drawLine(int x1, int y1, int x2, int y2) {
+  return new Line2D.Double(x1, y1, x2, y2);
+ }
+
+ private Rectangle2D.Double drawRect(int x1, int y1, int x2, int y2) {
+  if (x2 < x1 && y2 < y1) {
+   return new Rectangle2D.Double(x2, y2, x1 - x2, y1 - y2);
+  }
+  else if (x2 < x1 && y2 >= y1) {
+   return new Rectangle2D.Double(x2, y1, x1 - x2, y2 - y1);
+  }
+  else if (x2 >= x1 && y2 < y1) {
+   return new Rectangle2D.Double(x1, y2, x2 - x1, y1 - y2);
+  }
+  else {
+   return new Rectangle2D.Double(x1, y1, x2 - x1, y2 - y1);
+  }
+ }
+
 }
