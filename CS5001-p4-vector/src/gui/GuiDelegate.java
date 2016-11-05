@@ -217,16 +217,12 @@ public class GuiDelegate implements Observer {
   });
 
   downBar.add(label);
-  //  downBar.add(jColorChooser.getPreviewPanel());
   downBar.add(colorButton);
 
  }
 
  public void update(Observable o, Object arg) {
 
-  // Tell the SwingUtilities thread to update the GUI components.
-  // This is safer than executing outputField.setText(model.getText()) 
-  // in the caller's thread 
   SwingUtilities.invokeLater(new Runnable() {
    public void run() {
     drawPanel.repaint();
