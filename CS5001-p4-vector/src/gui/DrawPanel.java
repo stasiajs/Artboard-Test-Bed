@@ -35,6 +35,7 @@ public class DrawPanel extends JPanel {
 
  private boolean setFill = false;
  private boolean resize = false;
+ private boolean drag = false;
 
  ArrayList<CShape> shapeList;
  Rectangle2D.Double[] selections;
@@ -54,10 +55,7 @@ public class DrawPanel extends JPanel {
   addMouseListener(new MouseListener() {
 
    public void mouseClicked(MouseEvent e) {
-    pressX = e.getX();
-    pressY = e.getY();
-    System.out.println("Mouse clicked " + e.getX() + " " + e.getY());
-
+    //select
     if (mode == Config.SELECT_MODE) {
      selectedCShape = null;
      for (int i = 0; i < shapeList.size(); i++) {
@@ -82,18 +80,14 @@ public class DrawPanel extends JPanel {
       else {
        selections = new Rectangle2D.Double[4];
       }
-
-      //     if (shapeList.get(i).getShape().intersects(e.getX() - 1, e.getY() - 1, e.getX() - 1, e.getY() + 1)) {
-      //      System.out.println("Intersect position: " + i);
-      //     }
      }
     }
 
    }
 
    public void mouseReleased(MouseEvent e) {
-    System.out.println("Mouse released " + e.getX() + " " + e.getY());
     resize = false;
+    drag = false;
 
     if (mode == Config.DRAW_MODE) {
      switch (shapeMode) {
@@ -123,7 +117,6 @@ public class DrawPanel extends JPanel {
    }
 
    public void mousePressed(MouseEvent e) {
-    System.out.println("Mouse pressed " + e.getX() + " " + e.getY());
     pressX = e.getX();
     pressY = e.getY();
    }
@@ -131,6 +124,7 @@ public class DrawPanel extends JPanel {
   addMouseMotionListener(new MouseMotionListener() {
 
    public void mouseDragged(MouseEvent e) {
+    //draw
     if (mode == Config.DRAW_MODE) {
      switch (shapeMode) {
       case Config.DRAW_LINE: {
@@ -151,15 +145,19 @@ public class DrawPanel extends JPanel {
       Rectangle2D.Double rect = (Rectangle2D.Double) selectedCShape.getShape();
 
       if (selections[3].contains(e.getX(), e.getY()) && resize == false) {
-       System.out.println("pups");
+       System.out.println("resize");
        resize = true;
       }
 
-      if (resize == true) {
+      else if (resize == true) {
        rect.setRect(rect.getX(), rect.getY(), e.getX() - rect.getX(), e.getY() - rect.getY());
       }
+      
+      else if (rect.contains(e.getX(), e.getY()) && drag == false){
+       drag = true;
+      }
 
-      else {
+      else if (drag == true) {
        rect.setRect(e.getX() - rect.getWidth() / 2, e.getY() - rect.getHeight() / 2, rect.getWidth(), rect.getHeight());
       }
 
@@ -171,14 +169,14 @@ public class DrawPanel extends JPanel {
       Line2D.Double line = (Line2D.Double) selectedCShape.getShape();
 
       if (selections[3].contains(e.getX(), e.getY()) && resize == false) {
-       System.out.println("pups");
+       System.out.println("resize");
        resize = true;
       }
 
-      if (resize == true) {
+      else if (resize == true) {
        line.setLine(line.getX1(), line.getY1(), e.getX(), e.getY());
       }
-      
+      // ELSE IF drag == true usw
       else {
        int diffX = (int) (line.getX2()-line.getX1());
        int diffY = (int) (line.getY2()-line.getY1());
