@@ -17,6 +17,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import model.Model;
+import shapes.XCircle;
+import shapes.XEllipse;
+import shapes.XLine;
 import shapes.XRect;
 import shapes.XShape;
 import shapes.XSquare;
@@ -66,38 +69,17 @@ public class DrawPanel extends JPanel {
       if (shapeList.get(i).isClicked(e.getX(), e.getY())) {
        System.out.println(i + " was clicked");
        selectedXShape = shapeList.get(i);
-       selections = selectedXShape.getSelections();
+
       }
      }
-    }
+     if (selectedXShape != null && !selectedXShape.equals(null)) {
+      selections = selectedXShape.getSelections();
+     }
+     //     else {
+     //      selections = new Rectangle2D.Double[4];
+     //     }
 
-    //select
-    //    if (mode == Config.SELECT_MODE) {
-    //     selectedXShape = null;
-    //     for (int i = 0; i < shapeList.size(); i++) {
-    //
-    //      if (shapeList.get(i).getShape() instanceof Line2D.Double) {
-    //       if (shapeList.get(i).getShape().intersects(e.getX() - 1, e.getY() - 1, 3, 3)) {
-    //        System.out.println("ololl");
-    //        selectedXShape = shapeList.get(i);
-    //
-    //       }
-    //      }
-    //      else {
-    //       if (shapeList.get(i).getShape().contains(e.getX(), e.getY())) {
-    //        System.out.println("Hit position: " + i);
-    //        selectedXShape = shapeList.get(i);
-    //       }
-    //      }
-    //
-    //      if (selectedXShape != null && !selectedXShape.equals(null)) {
-    //       drawSelections();
-    //      }
-    //      else {
-    //       selections = new Rectangle2D.Double[4];
-    //      }
-    //     }
-    //    }
+    }
 
    }
 
@@ -126,20 +108,20 @@ public class DrawPanel extends JPanel {
    public void mousePressed(MouseEvent e) {
     pressX = e.getX();
     pressY = e.getY();
-    System.out.println("x perssed: " + pressX);
-    System.out.println("y perssed: " + pressY);
    }
   });
   addMouseMotionListener(new MouseMotionListener() {
 
    public void mouseDragged(MouseEvent e) {
-    //draw
+    //drawPreview
     if (mode == Config.DRAW_MODE) {
      switch (shapeMode) {
-      //      case Config.DRAW_LINE: {
-      //       drawXShape = drawLine(pressX, pressY, e.getX(), e.getY());
-      //       break;
-      //      }
+      case Config.DRAW_LINE: {
+       drawXShape = new XLine();
+       drawXShape.setColor(color);
+       drawXShape.draw(pressX, pressY, e.getX(), e.getY());
+       break;
+      }
       case Config.DRAW_RECT: {
        drawXShape = new XRect();
        drawXShape.setColor(color);
@@ -149,6 +131,20 @@ public class DrawPanel extends JPanel {
 
       case Config.DRAW_SQUARE: {
        drawXShape = new XSquare();
+       drawXShape.setColor(color);
+       drawXShape.draw(pressX, pressY, e.getX(), e.getY());
+       break;
+      }
+
+      case Config.DRAW_CIRCLE: {
+       drawXShape = new XCircle();
+       drawXShape.setColor(color);
+       drawXShape.draw(pressX, pressY, e.getX(), e.getY());
+       break;
+      }
+
+      case Config.DRAW_ELLIPSE: {
+       drawXShape = new XEllipse();
        drawXShape.setColor(color);
        drawXShape.draw(pressX, pressY, e.getX(), e.getY());
        break;
@@ -179,51 +175,6 @@ public class DrawPanel extends JPanel {
       selectedXShape.dragTo(e.getX(), e.getY());
       selections = selectedXShape.getSelections();
      }
-
-     //     if (selectedXShape.getShape() instanceof Rectangle2D.Double) {
-     //      Rectangle2D.Double rect = (Rectangle2D.Double) selectedXShape.getShape();
-     //
-     //      if (selections[3].contains(e.getX(), e.getY()) && resize == false) {
-     //       System.out.println("resize");
-     //       resize = true;
-     //      }
-     //
-     //      else if (resize == true) {
-     //       rect.setRect(rect.getX(), rect.getY(), e.getX() - rect.getX(), e.getY() - rect.getY());
-     //      }
-     //      
-     //      else if (rect.contains(e.getX(), e.getY()) && drag == false){
-     //       drag = true;
-     //      }
-     //
-     //      else if (drag == true) {
-     //       rect.setRect(e.getX() - rect.getWidth() / 2, e.getY() - rect.getHeight() / 2, rect.getWidth(), rect.getHeight());
-     //      }
-     //
-     //      // selection 
-     //      drawSelections();
-     //     }
-     //
-     //     else if (selectedXShape.getShape() instanceof Line2D.Double) {
-     //      Line2D.Double line = (Line2D.Double) selectedXShape.getShape();
-     //
-     //      if (selections[3].contains(e.getX(), e.getY()) && resize == false) {
-     //       System.out.println("resize");
-     //       resize = true;
-     //      }
-     //
-     //      else if (resize == true) {
-     //       line.setLine(line.getX1(), line.getY1(), e.getX(), e.getY());
-     //      }
-     //      // ELSE IF drag == true usw
-     //      else {
-     //       int diffX = (int) (line.getX2()-line.getX1());
-     //       int diffY = (int) (line.getY2()-line.getY1());
-     //       line.setLine(e.getX()-(diffX+1)/2, e.getY()-(diffX+1)/2, e.getX()+diffX/2, e.getY()+diffY/2);
-     //      }
-     //      drawSelections();
-     //     }
-
     }
 
     repaint();
@@ -290,36 +241,6 @@ public class DrawPanel extends JPanel {
  public void setSelectedCShape(XShape selectedCShape) {
   this.selectedXShape = selectedCShape;
  }
-
- private Line2D.Double drawLine(int x1, int y1, int x2, int y2) {
-  return new Line2D.Double(x1, y1, x2, y2);
- }
-
- // private Rectangle2D.Double drawRect(int x1, int y1, int x2, int y2) {
- //  if (x2 < x1 && y2 < y1) {
- //   return new Rectangle2D.Double(x2, y2, x1 - x2, y1 - y2);
- //  }
- //  else if (x2 < x1 && y2 >= y1) {
- //   return new Rectangle2D.Double(x2, y1, x1 - x2, y2 - y1);
- //  }
- //  else if (x2 >= x1 && y2 < y1) {
- //   return new Rectangle2D.Double(x1, y2, x2 - x1, y1 - y2);
- //  }
- //  else {
- //   return new Rectangle2D.Double(x1, y1, x2 - x1, y2 - y1);
- //  }
- // }
-
- // private void drawSelections() {
- //  selections[0] = new Rectangle2D.Double(selectedXShape.getShape().getBounds().getX() - 3,
- //    selectedXShape.getShape().getBounds().getY() - 3, 6, 6);
- //  selections[1] = new Rectangle2D.Double(selectedXShape.getShape().getBounds().getMaxX() - 3,
- //    selectedXShape.getShape().getBounds().getY() - 3, 6, 6);
- //  selections[2] = new Rectangle2D.Double(selectedXShape.getShape().getBounds().getX() - 3,
- //    selectedXShape.getShape().getBounds().getMaxY() - 3, 6, 6);
- //  selections[3] = new Rectangle2D.Double(selectedXShape.getShape().getBounds().getMaxX() - 3,
- //    selectedXShape.getShape().getBounds().getMaxY() - 3, 6, 6);
- // }
 
  private int getHitSelection(int x, int y) {
   if (selections != null && !selections.equals(null)) {

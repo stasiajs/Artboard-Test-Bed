@@ -1,12 +1,10 @@
 package model;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Stack;
 
 import shapes.XShape;
-import sun.security.provider.SHA;
 
 public class Model extends Observable {
 

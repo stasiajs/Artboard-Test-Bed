@@ -46,6 +46,8 @@ public abstract class XShape {
  public abstract void dragTo(int x, int y);
 
  public abstract void resize(int x, int y, int corner);
+ 
+ public abstract void changeOrientation();
 
  public Shape getShape() {
   return shape;

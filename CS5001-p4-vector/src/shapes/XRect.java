@@ -57,4 +57,10 @@ public class XRect extends XShape {
   }
  }
 
+ @Override
+ public void changeOrientation() {
+  // TODO Auto-generated method stub
+  
+ }
+
 }

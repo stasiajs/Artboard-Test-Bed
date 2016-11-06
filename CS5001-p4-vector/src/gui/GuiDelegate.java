@@ -182,6 +182,22 @@ public class GuiDelegate implements Observer {
    }
   });
 
+  circleButton.addActionListener(new ActionListener() {
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+    drawPanel.setDrawMode(Config.DRAW_CIRCLE);
+   }
+  });
+
+  ellipseButton.addActionListener(new ActionListener() {
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+    drawPanel.setDrawMode(Config.DRAW_ELLIPSE);
+   }
+  });
+
   leftBar.add(modeLabel);
   leftBar.add(drawButton);
   leftBar.add(selectButton);
@@ -190,6 +206,8 @@ public class GuiDelegate implements Observer {
   leftBar.add(lineButton);
   leftBar.add(squareButton);
   leftBar.add(rectButton);
+  leftBar.add(circleButton);
+  leftBar.add(ellipseButton);
 
   leftBar.addSeparator();
   leftBar.add(orientationButton);
