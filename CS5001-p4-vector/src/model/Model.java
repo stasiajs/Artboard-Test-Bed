@@ -5,17 +5,17 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Stack;
 
-import shapes.CShape;
+import shapes.XShape;
 import sun.security.provider.SHA;
 
 public class Model extends Observable {
 
- private ArrayList<CShape> shapeList;
- private Stack<CShape> redoable;
+ private ArrayList<XShape> shapeList;
+ private Stack<XShape> redoable;
 
  public Model() {
-  shapeList = new ArrayList<CShape>();
-  redoable = new Stack<CShape>();
+  shapeList = new ArrayList<XShape>();
+  redoable = new Stack<XShape>();
 
 
  }
@@ -36,14 +36,14 @@ public class Model extends Observable {
   }
  }
 
- public void addShape(CShape cshape) {
+ public void addShape(XShape xshape) {
   redoable.removeAllElements();
-  shapeList.add(cshape);
+  shapeList.add(xshape);
   setChanged();
   notifyObservers();
  }
 
- public ArrayList<CShape> getShapeList() {
+ public ArrayList<XShape> getShapeList() {
   return shapeList;
  }
 
