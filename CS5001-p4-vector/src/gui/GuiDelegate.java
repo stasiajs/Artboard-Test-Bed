@@ -6,12 +6,14 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -87,12 +89,43 @@ public class GuiDelegate implements Observer {
 
   load.addActionListener(new ActionListener() {
    public void actionPerformed(ActionEvent e) {
-    JOptionPane.showMessageDialog(jFrame, "Ooops, Load not linked to model!");
+    JFileChooser fc = new JFileChooser();
+    int returnVal = fc.showOpenDialog(fc);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+     File file = fc.getSelectedFile();
+     model.readFromFile(file.toString());
+     try {
+      System.out.println("File is " + file.toString());
+     }
+     catch (Exception e1) {
+     }
+    }
+    else {
+     System.out.println("User didn't select and Ok file choice");
+    }
+    
+//    model.readFromFile("file");
+    drawPanel.repaint();
+    
    }
   });
   save.addActionListener(new ActionListener() {
    public void actionPerformed(ActionEvent e) {
-    JOptionPane.showMessageDialog(jFrame, "Ooops, Save not linked to model!");
+    
+    JFileChooser fc = new JFileChooser();
+    int returnVal = fc.showOpenDialog(fc);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+      File file = fc.getSelectedFile();
+      model.saveToFile(file.toString());
+      try {
+        System.out.println ("File is " + file.toString());
+      } catch (Exception e1) {}
+    } else {
+      System.out.println("User didn't select and Ok file choice");
+    }
+    
+//    model.saveToFile("file");
+    drawPanel.repaint();
    }
   });
   undo.addActionListener(new ActionListener() {

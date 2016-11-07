@@ -1,5 +1,9 @@
 package model;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Stack;
@@ -14,7 +18,6 @@ public class Model extends Observable {
  public Model() {
   shapeList = new ArrayList<XShape>();
   redoable = new Stack<XShape>();
-
 
  }
 
@@ -43,6 +46,35 @@ public class Model extends Observable {
 
  public ArrayList<XShape> getShapeList() {
   return shapeList;
+ }
+
+ public void saveToFile(String filename) {
+  try {
+   FileOutputStream fos = new FileOutputStream(filename);
+   ObjectOutputStream oos = new ObjectOutputStream(fos);
+   oos.writeObject(shapeList);
+   oos.close();
+   fos.close();
+  }
+  catch (Exception e) {
+   System.out.println("File could not be written.");
+  }
+ }
+
+ public void readFromFile(String filename) {
+  try {
+   FileInputStream fis = new FileInputStream(filename);
+//   fis.
+   ObjectInputStream ois = new ObjectInputStream(fis);
+   ArrayList<XShape> readList = (ArrayList<XShape>) ois.readObject();
+   shapeList = readList;
+   ois.close();
+   fis.close();
+
+  }
+  catch (Exception e) {
+   System.out.println(e.getMessage());
+  }
  }
 
 }

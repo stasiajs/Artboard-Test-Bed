@@ -3,8 +3,9 @@ package shapes;
 import java.awt.Color;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
+import java.io.Serializable;
 
-public abstract class XShape {
+public abstract class XShape implements Serializable {
 
  protected Shape shape;
  private Color color;
@@ -80,5 +81,9 @@ public abstract class XShape {
  public void setLine(int line) {
   this.line = line;
  }
+ 
+// public String toString() {
+//  return "XShape [shape=" + shape.toString() + ", color=" + color.toString() + "]";
+// }
 
 }
