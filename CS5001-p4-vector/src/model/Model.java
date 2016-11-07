@@ -75,10 +75,8 @@ public class Model extends Observable {
 
  public void addUndoAction(){
   
- }
- 
- 
- public void addShape(XShape xshape) {
+  redoStack.clear();
+  
   try {
    // push current state
    undoStack.push(serialize(shapeList));
@@ -88,6 +86,11 @@ public class Model extends Observable {
    e.printStackTrace();
   }
   System.out.println("undoStack: " + undoStack.size());
+ }
+ 
+ 
+ public void addShape(XShape xshape) {
+  addUndoAction();
   shapeList.add(xshape);
 
   setChanged();

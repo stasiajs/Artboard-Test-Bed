@@ -272,6 +272,7 @@ public class GuiDelegate implements Observer {
     Color col = JColorChooser.showDialog(jColorChooser, "Choose Color", drawPanel.getColor());
     drawPanel.setColor(col);
     if (drawPanel.getSelectedCShape() != null) {
+     model.addUndoAction();
      drawPanel.getSelectedCShape().setColor(col);
      drawPanel.repaint();
     }

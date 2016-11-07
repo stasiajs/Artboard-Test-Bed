@@ -87,8 +87,15 @@ public class DrawPanel extends JPanel {
    }
 
    public void mouseReleased(MouseEvent e) {
-    resize = false;
-    drag = false;
+    
+    if (drag == true){
+     drag = false;
+    }
+    
+    if (resize == true){
+     resize = false;
+    }
+
     hitSelection = 5;
 
     if (mode == Config.DRAW_MODE) {
@@ -168,20 +175,24 @@ public class DrawPanel extends JPanel {
      int tempHitSelection = getHitSelection(e.getX(), e.getY());
 
      if (resize == false && tempHitSelection >= 0 && tempHitSelection < Config.NOT_HIT) {
+      model.addUndoAction();
       hitSelection = tempHitSelection;
       resize = true;
      }
 
      else if (resize == true) {
+      
       selectedXShape.resize(e.getX(), e.getY(), hitSelection);
       selections = selectedXShape.getSelections();
      }
 
      else if (selectedXShape.isClicked(e.getX(), e.getY()) && drag == false) {
+      model.addUndoAction();
       drag = true;
      }
 
      else if (drag == true) {
+      
       selectedXShape.dragTo(e.getX(), e.getY());
       selections = selectedXShape.getSelections();
      }
