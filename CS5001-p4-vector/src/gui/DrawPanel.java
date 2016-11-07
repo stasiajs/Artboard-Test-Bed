@@ -16,9 +16,12 @@ import java.util.LinkedList;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.sun.prism.BasicStroke;
+
 import model.Model;
 import shapes.XCircle;
 import shapes.XEllipse;
+import shapes.XHexagon;
 import shapes.XLine;
 import shapes.XRect;
 import shapes.XShape;
@@ -149,6 +152,13 @@ public class DrawPanel extends JPanel {
        drawXShape.draw(pressX, pressY, e.getX(), e.getY());
        break;
       }
+      
+      case Config.DRAW_HEX: {
+       drawXShape = new XHexagon();
+       drawXShape.setColor(color);
+       drawXShape.draw(pressX, pressY, e.getX(), e.getY());
+       break;
+      }
 
      }
     }
@@ -197,7 +207,11 @@ public class DrawPanel extends JPanel {
    XShape c = model.getShapeList().get(i);
    if (c != null && c.getColor() != null && c.getShape() != null) {
     g.setColor(c.getColor());
+//    g.setPaint(c.getColor());
+//    g.setStroke(s);
+//    g.setStroke());
     g.draw(c.getShape());
+//    g.drawPolygon(x);
    }
   }
 

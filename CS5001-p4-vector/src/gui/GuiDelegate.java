@@ -197,6 +197,14 @@ public class GuiDelegate implements Observer {
     drawPanel.setDrawMode(Config.DRAW_ELLIPSE);
    }
   });
+  
+  hexButton.addActionListener(new ActionListener() {
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+    drawPanel.setDrawMode(Config.DRAW_HEX);
+   }
+  });
 
   leftBar.add(modeLabel);
   leftBar.add(drawButton);
@@ -208,6 +216,7 @@ public class GuiDelegate implements Observer {
   leftBar.add(rectButton);
   leftBar.add(circleButton);
   leftBar.add(ellipseButton);
+  leftBar.add(hexButton);
 
   leftBar.addSeparator();
   leftBar.add(orientationButton);
