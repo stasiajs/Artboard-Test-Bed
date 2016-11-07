@@ -105,6 +105,9 @@ public class GuiDelegate implements Observer {
     }
     
 //    model.readFromFile("file");
+    // do i need this or is notify enough?
+    drawPanel.setShapeList(model.getShapeList());
+    model.notifyObservers();
     drawPanel.repaint();
     
    }
@@ -285,6 +288,7 @@ public class GuiDelegate implements Observer {
 
   SwingUtilities.invokeLater(new Runnable() {
    public void run() {
+    drawPanel.setShapeList(model.getShapeList());
     drawPanel.repaint();
    }
   });

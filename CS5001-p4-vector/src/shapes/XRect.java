@@ -2,10 +2,11 @@ package shapes;
 
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.Rectangle2D.Double;
+import java.io.Serializable;
 
 import gui.Config;
 
-public class XRect extends XShape {
+public class XRect extends XShape implements Serializable{
 
  public XRect() {
   shape = new Rectangle2D.Double();

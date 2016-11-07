@@ -270,4 +270,13 @@ public class DrawPanel extends JPanel {
 
  }
 
+ public ArrayList<XShape> getShapeList() {
+  return shapeList;
+ }
+
+ public void setShapeList(ArrayList<XShape> shapeList) {
+  this.shapeList = shapeList;
+ }
+
+
 }
