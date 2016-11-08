@@ -1,5 +1,6 @@
 package shapes;
 
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -13,9 +14,13 @@ import javax.imageio.ImageIO;
 public class XImage extends XRect {
 
  private byte[] serImage;
+// private transient BufferedImage bufferedImage;
 
  private int x;
  private int y;
+ private int w;
+ private int h;
+ 
 
  // public XImage() {
  //  super();
@@ -26,6 +31,10 @@ public class XImage extends XRect {
   System.out.println(serImage.length);
   this.x = x;
   this.y = y;
+  this.h = bufferedImage.getHeight();
+  this.w = bufferedImage.getWidth();
+  
+  shape = new Rectangle2D.Double(x, y, w, h);
  }
 
  public BufferedImage getImage() {
@@ -61,6 +70,19 @@ public class XImage extends XRect {
    e.printStackTrace();
    return null;
   }
+ }
+ 
+ @Override
+ public void dragTo(int x, int y) {
+  super.dragTo(x, y);
+  this.x = x-w/2;
+  this.y = y-w/2;
+//  ((Rectangle2D.Double) shape).setRect(x, y, w, h);
+ }
+ 
+ @Override
+ public void resize(int x, int y, int corner) {
+  
  }
 
  // public BufferedImage deserialize(byte[] data) throws IOException, ClassNotFoundException {
