@@ -92,7 +92,7 @@ public class Model extends Observable {
  public void addShape(XShape xshape) {
   addUndoAction();
   shapeList.add(xshape);
-
+  System.out.println("Shapes: "+shapeList.size());
   setChanged();
   notifyObservers();
  }

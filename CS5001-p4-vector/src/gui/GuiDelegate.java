@@ -145,33 +145,37 @@ public class GuiDelegate implements Observer {
   importImage.addActionListener(new ActionListener() {
    public void actionPerformed(ActionEvent e) {
     JFileChooser fc = new JFileChooser();
+    BufferedImage image = null;
     int returnVal = fc.showOpenDialog(fc);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-     BufferedImage image = null;
+     
      try {
       File file = fc.getSelectedFile();
       image = ImageIO.read(file);
       
-      XImage ximage = new XImage(image, 0, 0);
+
       
-      model.addUndoAction();
-      
-      model.addShape(ximage);
+
       
       System.out.println("File is " + file.toString());
      }
      catch (Exception e1) {
+      System.out.println("batz");
+      e1.getMessage();
      }
     }
     else {
      System.out.println("User didn't select and Ok file choice");
     }
+    XImage ximage = new XImage(image, 0, 0);
+    model.addUndoAction();
     
-//    model.readFromFile("file");
-    // do i need this or is notify enough?
+    model.addShape(ximage);
+    
     drawPanel.setShapeList(model.getShapeList());
     model.notifyObservers();
     drawPanel.repaint();
+    
     
    }
   });

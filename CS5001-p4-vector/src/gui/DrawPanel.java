@@ -219,10 +219,15 @@ public class DrawPanel extends JPanel {
    XShape c = model.getShapeList().get(i);
    
    if (c instanceof XImage && c != null && !c.equals(null)){
+    System.out.println("trying to draw image");
+    
     XImage ximage = ((XImage) c);
+
     g.drawImage(ximage.getImage(), ximage.getX(), ximage.getY(), null);
+    
    }
    else {
+    System.out.println("drawing normal shape");
     if (c != null && c.getColor() != null && c.getShape() != null) {
      g.setColor(c.getColor());
 //     g.setPaint(c.getColor());

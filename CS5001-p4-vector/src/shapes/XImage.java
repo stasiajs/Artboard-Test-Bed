@@ -1,35 +1,45 @@
 package shapes;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 public class XImage extends XRect {
- 
- private BufferedImage image;
-// private Color color = null;
- 
+
+ private int[] imageArray;
+
  private int x;
  private int y;
- 
- 
- 
- public XImage() {
-  
- }
- 
+ private int w;
+ private int h;
+ private int imageType;
+
+// public XImage() {
+//  super();
+// }
+
  public XImage(BufferedImage image, int x, int y) {
-  this.image = image;
+  
+  
+  
+  
+  imageArray = new int[image.getHeight()*image.getWidth()];
+  System.out.println("new imageArray constructed");
+  image.getRGB(0, 0, image.getWidth()-1, image.getHeight()-1, this.imageArray, 0, 1);
   this.x = x;
   this.y = y;
+  this.w = image.getWidth();
+  this.h = image.getHeight();
+  this.imageType = image.getType();
  }
 
  public BufferedImage getImage() {
-  return image;
+  BufferedImage bufferedImage = new BufferedImage(w, h, imageType);
+  bufferedImage.setRGB(0, 0, w-1, h-1, this.imageArray, 0, 1);
+  return bufferedImage;
  }
 
- public void setImage(BufferedImage image) {
-  this.image = image;
- }
+ // public void setImage(BufferedImage imageArray) {
+ //  this.image = (SerializableImage) imageArray;
+ // }
 
  public int getX() {
   return x;
@@ -46,5 +56,5 @@ public class XImage extends XRect {
  public void setY(int y) {
   this.y = y;
  }
- 
+
 }
