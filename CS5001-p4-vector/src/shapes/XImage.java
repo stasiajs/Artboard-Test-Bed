@@ -1,41 +1,75 @@
 package shapes;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 public class XImage extends XRect {
 
- private int[] imageArray;
+ private byte[] serImage;
 
  private int x;
  private int y;
- private int w;
- private int h;
- private int imageType;
 
-// public XImage() {
-//  super();
-// }
+ // public XImage() {
+ //  super();
+ // }
 
- public XImage(BufferedImage image, int x, int y) {
-  
-  
-  
-  
-  imageArray = new int[image.getHeight()*image.getWidth()];
-  System.out.println("new imageArray constructed");
-  image.getRGB(0, 0, image.getWidth()-1, image.getHeight()-1, this.imageArray, 0, 1);
+ public XImage(BufferedImage bufferedImage, int x, int y) {
+  this.serImage = setImage(bufferedImage);
+  System.out.println(serImage.length);
   this.x = x;
   this.y = y;
-  this.w = image.getWidth();
-  this.h = image.getHeight();
-  this.imageType = image.getType();
  }
 
  public BufferedImage getImage() {
-  BufferedImage bufferedImage = new BufferedImage(w, h, imageType);
-  bufferedImage.setRGB(0, 0, w-1, h-1, this.imageArray, 0, 1);
-  return bufferedImage;
+  try {
+   ByteArrayInputStream in = new ByteArrayInputStream(this.serImage);
+   ObjectInputStream is = new ObjectInputStream(in);
+   is.close();
+   in.close();
+//   return (BufferedImage) is.readObject();
+   
+   BufferedImage bufferedImage = ImageIO.read(in);
+   System.out.println("returning buffimg");
+   return bufferedImage;
+  }
+  catch (Exception e) {
+   e.printStackTrace();
+   return null;
+  }
  }
+
+ public byte[] setImage(BufferedImage bufferedImage) {
+  try {
+   ByteArrayOutputStream out = new ByteArrayOutputStream();
+   ObjectOutputStream os = new ObjectOutputStream(out);
+//   os.writeObject(bufferedImage);
+//   os.defaultWriteObject();
+   ImageIO.write(bufferedImage, "png", out);
+   os.close();
+   out.close();
+   return out.toByteArray();
+  }
+  catch (Exception e) {
+   e.printStackTrace();
+   return null;
+  }
+ }
+
+ // public BufferedImage deserialize(byte[] data) throws IOException, ClassNotFoundException {
+ //  ByteArrayInputStream in = new ByteArrayInputStream(data);
+ //  ObjectInputStream is = new ObjectInputStream(in);
+ //  is.close();
+ //  in.close();
+ //  return (BufferedImage) is.readObject();
+ // }
 
  // public void setImage(BufferedImage imageArray) {
  //  this.image = (SerializableImage) imageArray;

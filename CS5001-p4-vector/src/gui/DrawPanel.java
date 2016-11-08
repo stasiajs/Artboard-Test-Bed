@@ -218,7 +218,7 @@ public class DrawPanel extends JPanel {
   for (int i = 0; i < model.getShapeList().size(); i++) {
    XShape c = model.getShapeList().get(i);
    
-   if (c instanceof XImage && c != null && !c.equals(null)){
+   if (c instanceof XImage && c != null && !c.equals(null) && c.getShape() != null){
     System.out.println("trying to draw image");
     
     XImage ximage = ((XImage) c);
