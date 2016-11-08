@@ -6,10 +6,12 @@ import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.imageio.ImageIO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -24,6 +26,7 @@ import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 
 import model.Model;
+import shapes.XImage;
 
 public class GuiDelegate implements Observer {
  private Model model;
@@ -78,10 +81,13 @@ public class GuiDelegate implements Observer {
   JMenu edit = new JMenu("Edit");
   JMenuItem load = new JMenuItem("Load");
   JMenuItem save = new JMenuItem("Save");
+  JMenuItem importImage = new JMenuItem("Import Image");
   JMenuItem undo = new JMenuItem("Undo");
   JMenuItem redo = new JMenuItem("Redo");
+  
   file.add(load);
   file.add(save);
+  file.add(importImage);
   edit.add(undo);
   edit.add(redo);
   jMenuBar.add(file);
@@ -92,9 +98,10 @@ public class GuiDelegate implements Observer {
     JFileChooser fc = new JFileChooser();
     int returnVal = fc.showOpenDialog(fc);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-     File file = fc.getSelectedFile();
-     model.readFromFile(file.toString());
+
      try {
+      File file = fc.getSelectedFile();
+      model.readFromFile(file.toString());
       System.out.println("File is " + file.toString());
      }
      catch (Exception e1) {
@@ -116,11 +123,13 @@ public class GuiDelegate implements Observer {
    public void actionPerformed(ActionEvent e) {
     
     JFileChooser fc = new JFileChooser();
-    int returnVal = fc.showOpenDialog(fc);
+    int returnVal = fc.showSaveDialog(fc);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-      File file = fc.getSelectedFile();
-      model.saveToFile(file.toString());
+
       try {
+       
+       File file = fc.getSelectedFile();
+       model.saveToFile(file.toString());
         System.out.println ("File is " + file.toString());
       } catch (Exception e1) {}
     } else {
@@ -131,6 +140,42 @@ public class GuiDelegate implements Observer {
     drawPanel.repaint();
    }
   });
+  
+  
+  importImage.addActionListener(new ActionListener() {
+   public void actionPerformed(ActionEvent e) {
+    JFileChooser fc = new JFileChooser();
+    int returnVal = fc.showOpenDialog(fc);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+     BufferedImage image = null;
+     try {
+      File file = fc.getSelectedFile();
+      image = ImageIO.read(file);
+      
+      XImage ximage = new XImage(image, 0, 0);
+      
+      model.addUndoAction();
+      
+      model.addShape(ximage);
+      
+      System.out.println("File is " + file.toString());
+     }
+     catch (Exception e1) {
+     }
+    }
+    else {
+     System.out.println("User didn't select and Ok file choice");
+    }
+    
+//    model.readFromFile("file");
+    // do i need this or is notify enough?
+    drawPanel.setShapeList(model.getShapeList());
+    model.notifyObservers();
+    drawPanel.repaint();
+    
+   }
+  });
+  
   undo.addActionListener(new ActionListener() {
    public void actionPerformed(ActionEvent e) {
     drawPanel.setSelectedCShape(null);

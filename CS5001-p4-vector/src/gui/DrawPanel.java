@@ -22,6 +22,7 @@ import model.Model;
 import shapes.XCircle;
 import shapes.XEllipse;
 import shapes.XHexagon;
+import shapes.XImage;
 import shapes.XLine;
 import shapes.XRect;
 import shapes.XShape;
@@ -216,14 +217,23 @@ public class DrawPanel extends JPanel {
   // paint the shapes
   for (int i = 0; i < model.getShapeList().size(); i++) {
    XShape c = model.getShapeList().get(i);
-   if (c != null && c.getColor() != null && c.getShape() != null) {
-    g.setColor(c.getColor());
-//    g.setPaint(c.getColor());
-//    g.setStroke(s);
-//    g.setStroke());
-    g.draw(c.getShape());
-//    g.drawPolygon(x);
+   
+   if (c instanceof XImage && c != null && !c.equals(null)){
+    XImage ximage = ((XImage) c);
+    g.drawImage(ximage.getImage(), ximage.getX(), ximage.getY(), null);
    }
+   else {
+    if (c != null && c.getColor() != null && c.getShape() != null) {
+     g.setColor(c.getColor());
+//     g.setPaint(c.getColor());
+//     g.setStroke(s);
+//     g.setStroke());
+     g.draw(c.getShape());
+//     g.drawPolygon(x);
+    }
+   }
+   
+
   }
 
   // paint the current drawXShape
