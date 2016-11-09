@@ -77,7 +77,7 @@ public class DrawPanel extends JPanel {
       }
      }
      if (selectedXShape != null && !selectedXShape.equals(null)) {
-      selections = selectedXShape.getSelections();
+      selections = getSelections(selectedXShape);
      }
      //     else {
      //      selections = new Rectangle2D.Double[4];
@@ -88,12 +88,20 @@ public class DrawPanel extends JPanel {
    }
 
    public void mouseReleased(MouseEvent e) {
-    
-    if (drag == true){
+
+    if (mode == Config.SELECT_MODE) {
+     if (selectedXShape != null && !selectedXShape.equals(null)) {
+      selectedXShape.updateBounds();
+      selections = getSelections(selectedXShape);
+
+     }
+    }
+
+    if (drag == true) {
      drag = false;
     }
-    
-    if (resize == true){
+
+    if (resize == true) {
      resize = false;
     }
 
@@ -106,6 +114,7 @@ public class DrawPanel extends JPanel {
      }
      drawXShape = null;
     }
+
     repaint();
 
    }
@@ -160,7 +169,7 @@ public class DrawPanel extends JPanel {
        drawXShape.draw(pressX, pressY, e.getX(), e.getY());
        break;
       }
-      
+
       case Config.DRAW_HEX: {
        drawXShape = new XHexagon();
        drawXShape.setColor(color);
@@ -174,17 +183,19 @@ public class DrawPanel extends JPanel {
     else if (mode == Config.SELECT_MODE && selectedXShape != null && !selectedXShape.equals(null)) {
 
      int tempHitSelection = getHitSelection(e.getX(), e.getY());
+    
 
      if (resize == false && tempHitSelection >= 0 && tempHitSelection < Config.NOT_HIT) {
       model.addUndoAction();
       hitSelection = tempHitSelection;
+      System.out.println("Hit selection box: " +hitSelection);
       resize = true;
      }
 
      else if (resize == true) {
-      
+      selections = getSelections(selectedXShape);
       selectedXShape.resize(e.getX(), e.getY(), hitSelection);
-      selections = selectedXShape.getSelections();
+      
      }
 
      else if (selectedXShape.isClicked(e.getX(), e.getY()) && drag == false) {
@@ -193,9 +204,9 @@ public class DrawPanel extends JPanel {
      }
 
      else if (drag == true) {
-      
+
       selectedXShape.dragTo(e.getX(), e.getY());
-      selections = selectedXShape.getSelections();
+      selections = getSelections(selectedXShape);
      }
     }
 
@@ -217,25 +228,24 @@ public class DrawPanel extends JPanel {
   // paint the shapes
   for (int i = 0; i < model.getShapeList().size(); i++) {
    XShape c = model.getShapeList().get(i);
-   
-   if (c instanceof XImage && c != null && !c.equals(null) && c.getShape() != null){
-    
+
+   if (c instanceof XImage && c != null && !c.equals(null) && c.getShape() != null) {
+
     XImage ximage = ((XImage) c);
 
     g.drawImage(ximage.getImage(), ximage.getX(), ximage.getY(), null);
-    
+
    }
    else {
     if (c != null && c.getColor() != null && c.getShape() != null) {
      g.setColor(c.getColor());
-//     g.setPaint(c.getColor());
-//     g.setStroke(s);
-//     g.setStroke());
+     //     g.setPaint(c.getColor());
+     //     g.setStroke(s);
+     //     g.setStroke());
      g.draw(c.getShape());
-//     g.drawPolygon(x);
+     //     g.drawPolygon(x);
     }
    }
-   
 
   }
 
@@ -291,6 +301,27 @@ public class DrawPanel extends JPanel {
    }
   }
   return Config.NOT_HIT;
+ }
+
+ public Rectangle2D.Double[] getSelections(XShape shape) {
+
+  Rectangle2D.Double[] selections = new Rectangle2D.Double[4];
+  if (shape != null && !shape.equals(null)) {
+   selections[0] = new Rectangle2D.Double(shape.getShape().getBounds().getMinX() - 3,
+     shape.getShape().getBounds().getMinY() - 3, 6, 6);
+   selections[1] = new Rectangle2D.Double(shape.getShape().getBounds().getMaxX() - 3,
+     shape.getShape().getBounds().getMinY() - 3, 6, 6);
+   selections[2] = new Rectangle2D.Double(shape.getShape().getBounds().getMinX() - 3,
+     shape.getShape().getBounds().getMaxY() - 3, 6, 6);
+   selections[3] = new Rectangle2D.Double(shape.getShape().getBounds().getMaxX() - 3,
+     shape.getShape().getBounds().getMaxY() - 3, 6, 6);
+
+   return selections;
+  }
+
+  else {
+   return null;
+  }
 
  }
 
@@ -301,6 +332,5 @@ public class DrawPanel extends JPanel {
  public void setShapeList(ArrayList<XShape> shapeList) {
   this.shapeList = shapeList;
  }
-
 
 }
