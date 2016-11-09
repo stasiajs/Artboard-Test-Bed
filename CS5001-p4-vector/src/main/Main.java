@@ -9,5 +9,4 @@ public class Main {
   Model model = new Model();
   GuiDelegate guiDelegate = new GuiDelegate(model);
  }
-
 }

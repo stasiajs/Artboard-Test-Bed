@@ -7,34 +7,10 @@ import java.io.Serializable;
 
 import gui.Config;
 
-public class XRect extends XShape implements Serializable {
+public class XRect extends XShape {
 
  public XRect() {
   shape = new Path2D.Double();
- }
-
- @Override
- public void dragTo(int x, int y) {
-  draw(x - width / 2, y - height / 2, x + width / 2, y + height / 2);
- }
-
- @Override
- public void resize(int x, int y, int corner) {
-
-  if (corner == Config.HIT_BOTTOM_RIGHT) {
-   draw(x1, y1, x, y);
-  }
-  else if (corner == Config.HIT_TOP_LEFT) {
-   draw(x, y, x2, y2);
-
-  }
-  else if (corner == Config.HIT_TOP_RIGHT) {
-   draw(x1, y, x, y2);
-  }
-  else if (corner == Config.HIT_BOTTOM_LEFT) {
-   draw(x, y1, x2, y);
-  }
-
  }
 
  @Override
@@ -60,9 +36,20 @@ public class XRect extends XShape implements Serializable {
  }
 
  @Override
- public void changeOrientation() {
-  // TODO Auto-generated method stub
+ public void resize(int x, int y, int corner) {
+
+  if (corner == Config.HIT_BOTTOM_RIGHT) {
+   draw(x1, y1, x, y);
+  }
+  else if (corner == Config.HIT_TOP_LEFT) {
+   draw(x, y, x2, y2);
+  }
+  else if (corner == Config.HIT_TOP_RIGHT) {
+   draw(x1, y, x, y2);
+  }
+  else if (corner == Config.HIT_BOTTOM_LEFT) {
+   draw(x, y1, x2, y);
+  }
 
  }
-
 }

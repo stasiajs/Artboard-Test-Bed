@@ -183,19 +183,18 @@ public class DrawPanel extends JPanel {
     else if (mode == Config.SELECT_MODE && selectedXShape != null && !selectedXShape.equals(null)) {
 
      int tempHitSelection = getHitSelection(e.getX(), e.getY());
-    
 
      if (resize == false && tempHitSelection >= 0 && tempHitSelection < Config.NOT_HIT) {
       model.addUndoAction();
       hitSelection = tempHitSelection;
-      System.out.println("Hit selection box: " +hitSelection);
+      System.out.println("Hit selection box: " + hitSelection);
       resize = true;
      }
 
      else if (resize == true) {
       selections = getSelections(selectedXShape);
       selectedXShape.resize(e.getX(), e.getY(), hitSelection);
-      
+
      }
 
      else if (selectedXShape.isClicked(e.getX(), e.getY()) && drag == false) {
@@ -230,23 +229,15 @@ public class DrawPanel extends JPanel {
    XShape c = model.getShapeList().get(i);
 
    if (c instanceof XImage && c != null && !c.equals(null) && c.getShape() != null) {
-
     XImage ximage = ((XImage) c);
-
-    g.drawImage(ximage.getImage(), ximage.getX(), ximage.getY(), null);
-
+    g.drawImage(ximage.getImage(), ximage.getX1(), ximage.getY1(), ximage.getWidth(), ximage.getHeight(), null);
    }
    else {
     if (c != null && c.getColor() != null && c.getShape() != null) {
      g.setColor(c.getColor());
-     //     g.setPaint(c.getColor());
-     //     g.setStroke(s);
-     //     g.setStroke());
      g.draw(c.getShape());
-     //     g.drawPolygon(x);
     }
    }
-
   }
 
   // paint the current drawXShape
@@ -303,7 +294,7 @@ public class DrawPanel extends JPanel {
   return Config.NOT_HIT;
  }
 
- public Rectangle2D.Double[] getSelections(XShape shape) {
+ private Rectangle2D.Double[] getSelections(XShape shape) {
 
   Rectangle2D.Double[] selections = new Rectangle2D.Double[4];
   if (shape != null && !shape.equals(null)) {
@@ -323,10 +314,6 @@ public class DrawPanel extends JPanel {
    return null;
   }
 
- }
-
- public ArrayList<XShape> getShapeList() {
-  return shapeList;
  }
 
  public void setShapeList(ArrayList<XShape> shapeList) {

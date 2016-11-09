@@ -6,9 +6,6 @@ import gui.Config;
 
 public class XLine extends XShape {
 
- int xComp = 0;
- int yComp = 0;
-
  public XLine() {
   shape = new Line2D.Double();
  }
@@ -17,37 +14,31 @@ public class XLine extends XShape {
  public void draw(int x1, int y1, int x2, int y2) {
   ((Line2D.Double) shape).setLine(x1, y1, x2, y2);
 
-  xComp = x2 - x1;
-  yComp = y2 - y1;
- }
-
- @Override
- public void dragTo(int x, int y) {
-  Line2D.Double line = ((Line2D.Double) shape);
-  //  ((Line2D.Double) shape).get
-
-  line.setLine(x - (xComp + 1) / 2, y - (yComp + 1) / 2, x + xComp / 2, y + yComp / 2);
+  this.x1 = x1;
+  this.x2 = x2;
+  this.y1 = y1;
+  this.y2 = y2;
+  width = x2 - x1;
+  height = y2 - y1;
 
  }
+
 
  @Override
  public void resize(int x, int y, int corner) {
-  Line2D.Double line = ((Line2D.Double) shape);
 
   if (corner == Config.HIT_BOTTOM_RIGHT) {
-   line.setLine(line.getX1(), line.getY1(), x, y);
+   draw(x1, y1, x, y);
   }
-
-  else if (corner == Config.HIT_TOP_RIGHT) {
-   line.setLine(line.getX1(), y, x, line.getY2());
-  }
-
-  else if (corner == Config.HIT_BOTTOM_LEFT) {
-   line.setLine(x, line.getY1(), line.getX2(), y);
-  }
-
   else if (corner == Config.HIT_TOP_LEFT) {
-   line.setLine(x, y, line.getX2(), line.getY2());
+   draw(x, y, x2, y2);
+
+  }
+  else if (corner == Config.HIT_TOP_RIGHT) {
+   draw(x1, y, x, y2);
+  }
+  else if (corner == Config.HIT_BOTTOM_LEFT) {
+   draw(x, y1, x2, y);
   }
 
  }
@@ -62,10 +53,41 @@ public class XLine extends XShape {
   }
  }
 
- @Override
- public void changeOrientation() {
-  // TODO Auto-generated method stub
-  
- }
+// @Override
+// public void updateBounds(){
+//  
+//  if (x1<=x2){
+//   this.x1=(int) shape.getBounds().getMinX();
+//   System.out.println("minX: "+x1);
+//   this.x2=(int) shape.getBounds().getMaxX();
+//   System.out.println("maxX: "+x2);
+//   
+//  }
+//  
+//  else {
+//   this.x2=(int) shape.getBounds().getMinX();
+//   System.out.println("minX: "+x1);
+//   this.x1=(int) shape.getBounds().getMaxX();
+//   System.out.println("maxX: "+x2);
+//  }
+//  
+//  if (y1<=y2){
+//   this.y1=(int) shape.getBounds().getMinY();
+//   System.out.println("minY: "+y1);
+//
+//   this.y2=(int) shape.getBounds().getMaxY();
+//   System.out.println("maxY: "+y2);
+//  }
+//  
+//  else{
+//   this.y2=(int) shape.getBounds().getMinY();
+//   System.out.println("minY: "+y1);
+//
+//   this.y1=(int) shape.getBounds().getMaxY();
+//   System.out.println("maxY: "+y2);
+//  }
+//
+//
+// }
 
 }

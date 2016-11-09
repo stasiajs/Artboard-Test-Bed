@@ -1,6 +1,5 @@
 package shapes;
 
-import java.awt.Polygon;
 import java.awt.geom.Path2D;
 
 import gui.Config;
@@ -29,50 +28,34 @@ public class XHexagon extends XShape {
   path.lineTo(x1 + 0.25 * width, y1);
   path.closePath();
 
-  //  path.moveTo(0.0, 8.0);
-  //  path.curveTo(0.0, 0.0, 8.0, 0.0, 8.0, 0.0);
-  //  path.lineTo(width - 8.0, 0.0);
-  //  path.curveTo(width, 0.0, width, 8.0, width, 8.0);
-  //  path.lineTo(width, height - 8.0);
-  //  path.curveTo(width, height, width - 8.0, height, width - 8.0, height);
-  //  path.lineTo(8.0, height);
-  //  path.curveTo(0.0, height, 0.0, height - 8.0, 0, height - 8.0);
-  //  path.closePath();
+  this.x1 = x1;
+  this.x2 = x2;
+  this.y1 = y1;
+  this.y2 = y2;
+  this.width = x2 - x1;
+  this.height = y2 - y1;
 
   shape = path;
 
-  //  Polygon p = new Polygon();
-  //  
-  //  p.addPoint(x1, y1);
-  //  p.addPoint(x2, y2);
-  //  p.ad
-
-  //  .addAll(new Double[]{
-  //    -SHIP_WIDTH / 2, 0.0,
-  //    +SHIP_WIDTH / 2, 0.0,
-  //    0.0, SHIP_LENGTH;
-
- }
-
- @Override
- public void dragTo(int x, int y) {
-  // TODO Auto-generated method stub
 
  }
 
  @Override
  public void resize(int x, int y, int corner) {
-  Path2D.Double path = ((Path2D.Double) shape);
+  //  Path2D.Double path = ((Path2D.Double) shape);
   if (corner == Config.HIT_BOTTOM_RIGHT) {
-
-   draw((int) path.getBounds().getMinX(), (int) path.getBounds().getMinY(), x, y);
+   draw(x1, y1, x, y);
   }
+  else if (corner == Config.HIT_TOP_LEFT) {
+   draw(x, y, x2, y2);
 
- }
-
- @Override
- public void changeOrientation() {
-  // TODO Auto-generated method stub
+  }
+  else if (corner == Config.HIT_TOP_RIGHT) {
+   draw(x1, y, x, y2);
+  }
+  else if (corner == Config.HIT_BOTTOM_LEFT) {
+   draw(x, y1, x2, y);
+  }
 
  }
 
