@@ -1,11 +1,16 @@
 package shapes;
 
-import java.awt.geom.Rectangle2D;
-
 import gui.Config;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class XSquare.
+ */
 public class XSquare extends XRect {
 
+ /* (non-Javadoc)
+  * @see shapes.XRect#draw(int, int, int, int)
+  */
  @Override
  public void draw(int x1, int y1, int x2, int y2) {
 
@@ -17,6 +22,9 @@ public class XSquare extends XRect {
  }
 
 
+ /* (non-Javadoc)
+  * @see shapes.XRect#resize(int, int, int)
+  */
  @Override
  public void resize(int x, int y, int corner) {
 

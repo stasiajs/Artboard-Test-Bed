@@ -1,11 +1,16 @@
 package shapes;
 
-import java.awt.geom.Ellipse2D;
-
 import gui.Config;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class XCircle.
+ */
 public class XCircle extends XEllipse {
 
+ /* (non-Javadoc)
+  * @see shapes.XEllipse#draw(int, int, int, int)
+  */
  @Override
  public void draw(int x1, int y1, int x2, int y2) {
 
@@ -17,7 +22,10 @@ public class XCircle extends XEllipse {
   super.draw(x, y, x + s, y + s);
 
  }
- 
+
+ /* (non-Javadoc)
+  * @see shapes.XEllipse#resize(int, int, int)
+  */
  @Override
  public void resize(int x, int y, int corner) {
 

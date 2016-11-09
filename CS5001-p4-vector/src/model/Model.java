@@ -1,6 +1,5 @@
 package model;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -14,12 +13,24 @@ import java.util.Stack;
 
 import shapes.XShape;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Model.
+ */
 public class Model extends Observable {
 
+ /** The shape list. */
  private ArrayList<XShape> shapeList;
+
+ /** The redo stack. */
  private Stack<byte[]> redoStack;
+
+ /** The undo stack. */
  private Stack<byte[]> undoStack;
 
+ /**
+  * Instantiates a new model.
+  */
  public Model() {
   shapeList = new ArrayList<XShape>();
   redoStack = new Stack<byte[]>();
@@ -27,19 +38,17 @@ public class Model extends Observable {
 
  }
 
+ /**
+  * Undo.
+  */
  public void undo() {
   if (undoStack.size() > 0) {
    try {
-    System.out.println("undoPeek: " + undoStack.peek());
-    
     // put the current list on the redoStack
     redoStack.push(serialize(shapeList));
-    
+
     // make the last item of the undoStack the list
     shapeList = new ArrayList<XShape>(deserialize((undoStack.pop())));
-    
-    
-    
 
    }
    catch (ClassNotFoundException e) {
@@ -53,13 +62,14 @@ public class Model extends Observable {
   }
  }
 
+ /**
+  * Redo.
+  */
  public void redo() {
   if (redoStack.size() > 0) {
    try {
-    System.out.println("redoPeek: " + redoStack.peek());
     undoStack.push(serialize(shapeList));
     shapeList = deserialize(redoStack.pop());
-
 
    }
    catch (ClassNotFoundException e) {
@@ -73,10 +83,13 @@ public class Model extends Observable {
   }
  }
 
- public void addUndoAction(){
-  
+ /**
+  * Adds the undo action.
+  */
+ public void addUndoAction() {
+
   redoStack.clear();
-  
+
   try {
    // push current state
    undoStack.push(serialize(shapeList));
@@ -85,14 +98,16 @@ public class Model extends Observable {
    // TODO Auto-generated catch block
    e.printStackTrace();
   }
-  System.out.println("undoStack: " + undoStack.size());
  }
- 
- 
+
+ /**
+  * Adds the shape.
+  *
+  * @param xshape the xshape
+  */
  public void addShape(XShape xshape) {
   addUndoAction();
   shapeList.add(xshape);
-  System.out.println("Shapes: "+shapeList.size());
   setChanged();
   notifyObservers();
  }
@@ -106,6 +121,13 @@ public class Model extends Observable {
  //  return new ArrayList<XShape>(shapeList);
  // }
 
+ /**
+  * Serialize.
+  *
+  * @param shapeList the shape list
+  * @return the byte[]
+  * @throws IOException Signals that an I/O exception has occurred.
+  */
  public byte[] serialize(ArrayList<XShape> shapeList) throws IOException {
   ByteArrayOutputStream out = new ByteArrayOutputStream();
   ObjectOutputStream os = new ObjectOutputStream(out);
@@ -115,6 +137,14 @@ public class Model extends Observable {
   return out.toByteArray();
  }
 
+ /**
+  * Deserialize.
+  *
+  * @param data the data
+  * @return the array list
+  * @throws IOException Signals that an I/O exception has occurred.
+  * @throws ClassNotFoundException the class not found exception
+  */
  public ArrayList<XShape> deserialize(byte[] data) throws IOException, ClassNotFoundException {
   ByteArrayInputStream in = new ByteArrayInputStream(data);
   ObjectInputStream is = new ObjectInputStream(in);
@@ -123,37 +153,46 @@ public class Model extends Observable {
   return (ArrayList<XShape>) is.readObject();
  }
 
+ /**
+  * Gets the shape list.
+  *
+  * @return the shape list
+  */
  public ArrayList<XShape> getShapeList() {
   return shapeList;
  }
 
- public void saveToFile(String filename) {
-  try {
-   FileOutputStream fos = new FileOutputStream(filename);
-   ObjectOutputStream oos = new ObjectOutputStream(fos);
-   oos.writeObject(shapeList);
-   oos.close();
-   fos.close();
-  }
-  catch (Exception e) {
-   System.out.println("File could not be written.");
-  }
+ /**
+  * Save to file.
+  *
+  * @param filename the filename
+  * @throws IOException 
+  */
+ public void saveToFile(String filename) throws IOException {
+  FileOutputStream fos = new FileOutputStream(filename);
+  ObjectOutputStream oos = new ObjectOutputStream(fos);
+  oos.writeObject(shapeList);
+  oos.close();
+  fos.close();
  }
 
- public void readFromFile(String filename) {
-  try {
-   FileInputStream fis = new FileInputStream(filename);
-   //   fis.
-   ObjectInputStream ois = new ObjectInputStream(fis);
-   ArrayList<XShape> readList = (ArrayList<XShape>) ois.readObject();
-   shapeList = readList;
-   ois.close();
-   fis.close();
-
-  }
-  catch (Exception e) {
-   System.out.println(e.getMessage());
-  }
+ /**
+  * Read from file.
+  *
+  * @param filename the filename
+  */
+ public void readFromFile(String filename) throws IOException, ClassNotFoundException {
+  FileInputStream fis = new FileInputStream(filename);
+  ObjectInputStream ois = new ObjectInputStream(fis);
+  ArrayList<XShape> readList = (ArrayList<XShape>) ois.readObject();
+  shapeList = readList;
+  ois.close();
+  fis.close();
  }
 
+ public void clearUndoRedo(){
+  undoStack.clear();
+  redoStack.clear();
+ }
+ 
 }

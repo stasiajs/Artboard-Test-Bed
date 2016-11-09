@@ -1,18 +1,25 @@
 package shapes;
 
 import java.awt.geom.Path2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.Rectangle2D.Double;
-import java.io.Serializable;
 
 import gui.Config;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class XRect.
+ */
 public class XRect extends XShape {
 
+ /**
+  * Instantiates a new x rect.
+  */
  public XRect() {
   shape = new Path2D.Double();
  }
 
+ /* (non-Javadoc)
+  * @see shapes.XShape#draw(int, int, int, int)
+  */
  @Override
  public void draw(int x1, int y1, int x2, int y2) {
 
@@ -29,12 +36,15 @@ public class XRect extends XShape {
   this.x2 = x2;
   this.y1 = y1;
   this.y2 = y2;
-  this.width = x2 - x1;
-  this.height = y2 - y1;
+  width = x2 - x1;
+  height = y2 - y1;
   shape = rect;
 
  }
 
+ /* (non-Javadoc)
+  * @see shapes.XShape#resize(int, int, int)
+  */
  @Override
  public void resize(int x, int y, int corner) {
 

@@ -4,28 +4,37 @@ import java.awt.geom.Path2D;
 
 import gui.Config;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class XHexagon.
+ */
 public class XHexagon extends XShape {
 
+ /**
+  * Instantiates a new x hexagon.
+  */
  public XHexagon() {
 
   shape = new Path2D.Double();
 
  }
 
+ /* (non-Javadoc)
+  * @see shapes.XShape#draw(int, int, int, int)
+  */
  @Override
  public void draw(int x1, int y1, int x2, int y2) {
-  System.out.println("drawing");
   double width = x2 - x1;
   double height = y2 - y1;
   Path2D.Double path = new Path2D.Double();
 
-  path.moveTo(x1 + 0.25 * width, y1);
-  path.lineTo(x1 + 0.75 * width, y1);
-  path.lineTo(x2, y1 + 0.5 * height);
-  path.lineTo(x1 + 0.75 * width, y2);
-  path.lineTo(x1 + 0.25 * width, y2);
-  path.lineTo(x1, y1 + 0.5 * height);
-  path.lineTo(x1 + 0.25 * width, y1);
+  path.moveTo(x1 + (0.25 * width), y1);
+  path.lineTo(x1 + (0.75 * width), y1);
+  path.lineTo(x2, y1 + (0.5 * height));
+  path.lineTo(x1 + (0.75 * width), y2);
+  path.lineTo(x1 + (0.25 * width), y2);
+  path.lineTo(x1, y1 + (0.5 * height));
+  path.lineTo(x1 + (0.25 * width), y1);
   path.closePath();
 
   this.x1 = x1;
@@ -40,9 +49,11 @@ public class XHexagon extends XShape {
 
  }
 
+ /* (non-Javadoc)
+  * @see shapes.XShape#resize(int, int, int)
+  */
  @Override
  public void resize(int x, int y, int corner) {
-  //  Path2D.Double path = ((Path2D.Double) shape);
   if (corner == Config.HIT_BOTTOM_RIGHT) {
    draw(x1, y1, x, y);
   }

@@ -1,36 +1,49 @@
 package shapes;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class XImage.
+ */
 public class XImage extends XRect {
 
+ /** The serialized image. */
  private byte[] serializedImage;
 
+ /**
+  * Instantiates a new x image.
+  *
+  * @param bufferedImage the buffered image
+  * @param x the x
+  * @param y the y
+  */
  public XImage(BufferedImage bufferedImage, int x, int y) {
-  this.serializedImage = setImage(bufferedImage);
+  serializedImage = setImage(bufferedImage);
   System.out.println(serializedImage.length);
-  this.x1 = x;
-  this.y1 = y;
-  this.height = bufferedImage.getHeight();
-  this.width = bufferedImage.getWidth();
+  x1 = x;
+  y1 = y;
+  height = bufferedImage.getHeight();
+  width = bufferedImage.getWidth();
 
   shape = new Rectangle2D.Double(x, y, width, height);
  }
 
+ /**
+  * Gets the image.
+  *
+  * @return the image
+  */
  public BufferedImage getImage() {
   try {
-   ByteArrayInputStream bais = new ByteArrayInputStream(this.serializedImage);
+   ByteArrayInputStream bais = new ByteArrayInputStream(serializedImage);
    ObjectInputStream ois = new ObjectInputStream(bais);
    ois.close();
    bais.close();
@@ -42,6 +55,12 @@ public class XImage extends XRect {
   }
  }
 
+ /**
+  * Sets the image.
+  *
+  * @param bufferedImage the buffered image
+  * @return the byte[]
+  */
  public byte[] setImage(BufferedImage bufferedImage) {
   try {
    ByteArrayOutputStream baos = new ByteArrayOutputStream();
