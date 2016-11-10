@@ -95,7 +95,7 @@ public class GuiDelegate implements Observer {
   borderPane.add(leftBar, BorderLayout.WEST);
   borderPane.add(downBar, BorderLayout.SOUTH);
 
-  jFrame.setSize(Config.PANEL_WIDTH, Config.PANEL_WIDTH);
+  jFrame.setSize(Config.PANEL_WIDTH, Config.PANEL_HEIGHT);
   jFrame.setVisible(true);
   jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -153,7 +153,6 @@ public class GuiDelegate implements Observer {
      }
     }
 
-    //    drawPanel.setShapeList(model.getShapeList());
     model.notifyObservers();
     drawPanel.repaint();
 
@@ -435,7 +434,7 @@ public class GuiDelegate implements Observer {
  }
 
  /**
-  * Updates the shape list reference and repaints the shapes.
+  * Updates the model reference and repaints the shapes.
   *
   * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
   */
@@ -445,7 +444,7 @@ public class GuiDelegate implements Observer {
   SwingUtilities.invokeLater(new Runnable() {
    @Override
    public void run() {
-    drawPanel.setShapeList(model.getShapeList());
+    drawPanel.setModel(model);
     drawPanel.repaint();
    }
   });

@@ -94,6 +94,23 @@ public class Model extends Observable {
  }
 
  /**
+  * Gets the last XShape in the list which contains the position x,y .
+  *
+  * @param x the x position
+  * @param y the y position
+  * @return the x shape at position x,y; null if no shape at this position
+  */
+ public XShape getXShapeAtPos(int x, int y) {
+  XShape selectedXShape = null;
+  for (int i = 0; i < shapeList.size(); i++) {
+   if (shapeList.get(i).isClicked(x, y)) {
+    selectedXShape = shapeList.get(i);
+   }
+  }
+  return selectedXShape;
+ }
+
+ /**
   * Adds a new XShape to the shape list and notifies the observers. Before adding, an undo action is invoked.
   *
   * @param xshape the xshape

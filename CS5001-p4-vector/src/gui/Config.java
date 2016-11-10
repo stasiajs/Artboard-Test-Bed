@@ -1,7 +1,7 @@
 package gui;
 
 /**
- * The Class Config.
+ * The Configuration file.
  */
 public class Config {
 
@@ -51,7 +51,7 @@ public class Config {
  public static final int PANEL_HEIGHT = 600;
 
  /** The Constant PANEL_WIDTH defines the width of the draw panel. */
- public static final int PANEL_WIDTH = 600;
+ public static final int PANEL_WIDTH = 800;
 
  /** The Constant BOX_INT defines the number of resize boxes per shape. */
  public static final int BOX_INT = 4;

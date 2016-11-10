@@ -65,9 +65,6 @@ public class DrawPanel extends JPanel {
  /** The number of the resize box that is hit when resizing the selected shape. NOT_HIT (4) is default. */
  private int hitResizedBox = Config.NOT_HIT;
 
- /** The reference of the shape list in the model. */
- private ArrayList<XShape> shapeList;
-
  /** The resize boxes that appear when selecting a shape. */
  private Rectangle2D.Double[] resizeBoxes;
 
@@ -79,7 +76,6 @@ public class DrawPanel extends JPanel {
  public DrawPanel(Model model) {
 
   this.model = model;
-  shapeList = model.getShapeList();
   resizeBoxes = new Rectangle2D.Double[Config.BOX_INT];
 
   this.setSize(Config.PANEL_WIDTH, Config.PANEL_HEIGHT);
@@ -92,14 +88,12 @@ public class DrawPanel extends JPanel {
    @Override
    public void mouseClicked(MouseEvent e) {
 
+    // reset selection at mouse click
     selectedXShape = null;
     // when mouse is clicked in select mode, go through the list of shapes and get a shape if one was hit
     if (mode == Config.SELECT_MODE) {
-     for (int i = 0; i < shapeList.size(); i++) {
-      if (shapeList.get(i).isClicked(e.getX(), e.getY())) {
-       selectedXShape = shapeList.get(i);
-      }
-     }
+     selectedXShape = model.getXShapeAtPos(e.getX(), e.getY());
+
      // show the resize boxes of the selected shape
      if ((selectedXShape != null) && !selectedXShape.equals(null)) {
       resizeBoxes = getSelections(selectedXShape);
@@ -414,15 +408,6 @@ public class DrawPanel extends JPanel {
  }
 
  /**
-  * Sets the shape list reference.
-  *
-  * @param shapeList the new shape list
-  */
- public void setShapeList(ArrayList<XShape> shapeList) {
-  this.shapeList = shapeList;
- }
-
- /**
   * Checks if shapes are being filled when drawn.
   *
   * @return true, if is sets the fill
@@ -456,6 +441,15 @@ public class DrawPanel extends JPanel {
   */
  public void setExport(boolean export) {
   this.export = export;
+ }
+
+ /**
+  * Sets the model.
+  *
+  * @param model the new model
+  */
+ public void setModel(Model model) {
+  this.model = model;
  }
 
 }
