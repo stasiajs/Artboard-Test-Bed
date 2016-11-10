@@ -3,12 +3,14 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -31,38 +33,38 @@ import model.Model;
 import shapes.XImage;
 
 /**
- * The Class GuiDelegate.
+ * The Class GuiDelegate describes the GUI elements of the application. It has a menu bar for file and edit operations, a sidebar for drawing operation, a bottom bar for selecting color and fill for shapes, and a JPanel for drawing. 
  */
 public class GuiDelegate implements Observer {
 
- /** The model. */
+ /** The model, that can be seen by the GUI. */
  private Model model;
 
- /** The j frame. */
+ /** The main JFrame. */
  private JFrame jFrame;
 
- /** The border pane. */
+ /** A border pane for the layout. */
  private Container borderPane;
 
- /** The j menu bar. */
+ /** The menu bar of the application. */
  private JMenuBar jMenuBar;
 
- /** The draw panel. */
+ /** The draw panel, where the shapes are drawn on. */
  private DrawPanel drawPanel;
 
- /** The left bar. */
+ /** The left bar has different buttons for shape operations. */
  private JToolBar leftBar;
 
- /** The down bar. */
+ /** The down bar has buttons for choosing color and fill. */
  private JToolBar downBar;
 
- /** The j color chooser. */
+ /** The color chooser. */
  private JColorChooser jColorChooser;
 
  /**
   * Instantiates a new gui delegate.
   *
-  * @param model the model
+  * @param model the model that the delegate can see
   */
  public GuiDelegate(Model model) {
   this.model = model;
@@ -100,7 +102,7 @@ public class GuiDelegate implements Observer {
  }
 
  /**
-  * Setup menu.
+  * Setup menu of the application.
   */
  private void setupMenu() {
   JMenu file = new JMenu("File");
@@ -108,6 +110,7 @@ public class GuiDelegate implements Observer {
   JMenuItem newProject = new JMenuItem("New Project");
   JMenuItem load = new JMenuItem("Load Project from File");
   JMenuItem save = new JMenuItem("Save Project as...");
+  JMenuItem export = new JMenuItem("Export to PNG");
 
   JMenuItem importImage = new JMenuItem("Import Image");
   JMenuItem undo = new JMenuItem("Undo step");
@@ -117,6 +120,7 @@ public class GuiDelegate implements Observer {
   file.add(load);
   file.add(save);
   file.add(importImage);
+  file.add(export);
   edit.add(undo);
   edit.add(redo);
   jMenuBar.add(file);
@@ -178,6 +182,31 @@ public class GuiDelegate implements Observer {
    }
   });
 
+  export.addActionListener(new ActionListener() {
+
+   @Override
+   public void actionPerformed(ActionEvent e) {
+    JFileChooser fc = new JFileChooser();
+    int returnVal = fc.showSaveDialog(fc);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+     
+     try {
+      BufferedImage exportImg = new BufferedImage(drawPanel.getWidth(), drawPanel.getHeight(),
+        BufferedImage.TYPE_INT_RGB);
+      Graphics2D exportGraphics = exportImg.createGraphics();
+      drawPanel.setExport(true);
+      drawPanel.paintComponent(exportGraphics);
+      File file = fc.getSelectedFile();
+      ImageIO.write(exportImg, "png", file);
+      drawPanel.setExport(false);
+     }
+     catch (IOException e1) {
+      JOptionPane.showMessageDialog(new JFrame(), "Could not save file!", "Error", JOptionPane.ERROR_MESSAGE);
+     }
+    }
+   }
+  });
+
   importImage.addActionListener(new ActionListener() {
    @Override
    public void actionPerformed(ActionEvent e) {
@@ -217,7 +246,7 @@ public class GuiDelegate implements Observer {
  }
 
  /**
-  * Setup left bar.
+  * Setup left bar of the application.
   */
  private void setupLeftBar() {
 
@@ -368,14 +397,13 @@ public class GuiDelegate implements Observer {
  }
 
  /**
-  * Setup down bar.
+  * Setup bottom bar of the application.
   */
  private void setupDownBar() {
   JLabel label = new JLabel("Select color: ");
   JButton colorButton = new JButton();
   JButton fillButton = new JButton("Fill/unfill selected shape");
 
-  colorButton.setSize(32, 32);
   colorButton.setBackground(Color.BLACK);
   colorButton.addActionListener(new ActionListener() {
 
@@ -407,7 +435,9 @@ public class GuiDelegate implements Observer {
 
  }
 
- /** 
+ /**
+  * Updates the shape list reference and repaints the shapes.
+  * 
   * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
   */
  @Override

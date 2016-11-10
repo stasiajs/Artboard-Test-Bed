@@ -22,67 +22,69 @@ import shapes.XShape;
 import shapes.XSquare;
 
 /**
- * The Class DrawPanel.
+ * The Class DrawPanel draws all the shapes of the shape list on a JPanel. It is also responsible for displaying changes regarding resizing and moving.
  */
 public class DrawPanel extends JPanel {
 
- /** The model. */
+ /** The model with the underlying shapes. */
  private Model model;
 
- /** The press X. */
+ /** X position, when mouse is pressed. */
  private int pressX = 0;
 
- /** The press Y. */
+ /** Y position, when mouse is pressed. */
  private int pressY = 0;
 
- /** The draw X shape. */
+ /** Temporary reference to the XShape that is being drawn. */
  private XShape drawXShape;
 
- /** The selected X shape. */
+ /** Temporary reference to the XShape that is selected. */
  private XShape selectedXShape;
 
- /** The color. */
+ /** The current drawing color. */
  private Color color;
 
- /** The shape mode. */
+ /** The current drawing mode of shapes. Drawing lines is default. */
  private int shapeMode = Config.DRAW_LINE;
 
- /** The mode. */
+ /** Defines the current mode. Is either DRAW_MODE or SELECT_MODE. DRAW_MODE is default. */
  private int mode = Config.DRAW_MODE;
 
- /** The set fill. */
+ /** Defines if the shapes are being filled or not. False is default. */
  private boolean setFill = false;
 
- /** The resize. */
+ /** Turns true, when a shape is being resized. */
  private boolean resize = false;
 
- /** The drag. */
+ /** Turns true, when a shape is being dragged.*/
  private boolean drag = false;
 
- /** The hit selection. */
- private int hitSelection = 5;
+ /** Turns true, when a shape is being exported and makes the resizeBoxes invisible for the exported image. */
+ private boolean export = false;
 
- /** The shape list. */
+ /** The number of the resize box that is hit when resizing the selected shape. NOT_HIT (4) is default. */
+ private int hitResizedBox = Config.NOT_HIT;
+
+ /** The reference of the shape list in the model. */
  ArrayList<XShape> shapeList;
 
- /** The selections. */
- Rectangle2D.Double[] selections;
+ /** The resize boxes that appear when selecting a shape. */
+ Rectangle2D.Double[] resizeBoxes;
 
  /**
   * Instantiates a new draw panel.
   *
-  * @param model the model
+  * @param model the model with the list of shapes
   */
  public DrawPanel(Model model) {
 
   this.model = model;
   shapeList = model.getShapeList();
-  selections = new Rectangle2D.Double[4];
+  resizeBoxes = new Rectangle2D.Double[4];
 
   this.setSize(800, 600);
   setBackground(Color.WHITE);
   setVisible(true);
-
   color = Color.BLACK;
 
   addMouseListener(new MouseListener() {
@@ -91,48 +93,39 @@ public class DrawPanel extends JPanel {
    public void mouseClicked(MouseEvent e) {
 
     selectedXShape = null;
-
+    // when mouse is clicked in select mode, go through the list of shapes and get a shape if one was hit
     if (mode == Config.SELECT_MODE) {
      for (int i = 0; i < shapeList.size(); i++) {
       if (shapeList.get(i).isClicked(e.getX(), e.getY())) {
        selectedXShape = shapeList.get(i);
-
       }
      }
+     // show the resize boxes of the selected shape
      if ((selectedXShape != null) && !selectedXShape.equals(null)) {
-      selections = getSelections(selectedXShape);
+      resizeBoxes = getSelections(selectedXShape);
      }
-     //     else {
-     //      selections = new Rectangle2D.Double[4];
-     //     }
-
     }
-
    }
 
    @Override
    public void mouseReleased(MouseEvent e) {
 
+    // stop dragging when released
+    drag = false;
+    // stop resizing when released
+    resize = false;
+    hitResizedBox = 5;
+
+    // reset selection boxes for the selected element as soon as the mouse was released
     if (mode == Config.SELECT_MODE) {
      if ((selectedXShape != null) && !selectedXShape.equals(null)) {
       selectedXShape.updateBounds();
-      selections = getSelections(selectedXShape);
-
+      resizeBoxes = getSelections(selectedXShape);
      }
     }
 
-    if (drag == true) {
-     drag = false;
-    }
-
-    if (resize == true) {
-     resize = false;
-    }
-
-    hitSelection = 5;
-
-    if (mode == Config.DRAW_MODE) {
-
+    // if in draw mode and a new shape was drawn, add it to the list
+    else if (mode == Config.DRAW_MODE) {
      if ((drawXShape != null) && !drawXShape.equals(null)) {
       model.addShape(drawXShape);
      }
@@ -153,15 +146,18 @@ public class DrawPanel extends JPanel {
 
    @Override
    public void mousePressed(MouseEvent e) {
+    // save the first x and y position as soon as the mouse is pressed
     pressX = e.getX();
     pressY = e.getY();
    }
   });
+
   addMouseMotionListener(new MouseMotionListener() {
 
    @Override
    public void mouseDragged(MouseEvent e) {
-    //drawPreview
+
+    // preview of the shape that is being drawn when in draw mode
     if (mode == Config.DRAW_MODE) {
      switch (shapeMode) {
       case Config.DRAW_LINE: {
@@ -214,31 +210,35 @@ public class DrawPanel extends JPanel {
      }
     }
 
+    // in select mode check if one of the resize boxes was hit and resize accordingly
+    // if not check if the mouse was dragged on the element and drag it accordingly
     else if ((mode == Config.SELECT_MODE) && (selectedXShape != null) && !selectedXShape.equals(null)) {
 
-     int tempHitSelection = getHitSelection(e.getX(), e.getY());
+     int tempHitSelection = getResizeBoxNumber(e.getX(), e.getY());
 
+     // if one of the boxes was dragged, start the resize mode
      if ((resize == false) && (tempHitSelection >= 0) && (tempHitSelection < Config.NOT_HIT)) {
       model.addUndoAction();
-      hitSelection = tempHitSelection;
+      hitResizedBox = tempHitSelection;
       resize = true;
      }
 
+     // execute the resize mode as long as the mouse is pressed
      else if (resize == true) {
-      selections = getSelections(selectedXShape);
-      selectedXShape.resize(e.getX(), e.getY(), hitSelection);
-
+      resizeBoxes = getSelections(selectedXShape);
+      selectedXShape.resize(e.getX(), e.getY(), hitResizedBox);
      }
 
+     // check if the shape was clicked and initiate the drag mode if so
      else if (selectedXShape.isClicked(e.getX(), e.getY()) && (drag == false)) {
       model.addUndoAction();
       drag = true;
      }
 
+     // execute the drag mode as long as the mouse is clicked
      else if (drag == true) {
-
       selectedXShape.dragTo(e.getX(), e.getY());
-      selections = getSelections(selectedXShape);
+      resizeBoxes = getSelections(selectedXShape);
      }
     }
 
@@ -247,13 +247,16 @@ public class DrawPanel extends JPanel {
 
    @Override
    public void mouseMoved(MouseEvent e) {
-
    }
   });
 
  }
 
- /* (non-Javadoc)
+ /** 
+  * The paintComponent paints all the shapes on the panel. First all the shapes from the list are painted.
+  * Then if a new shape is being drawn, it gets painted.
+  * At last the selection boxes are added, if there is a selected element and if the image is not being exported to PNG at the moment.
+  * 
   * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
   */
  @Override
@@ -261,16 +264,19 @@ public class DrawPanel extends JPanel {
   Graphics2D g = (Graphics2D) graphics;
   super.paintComponent(g);
 
-  // paint the shapes
+  // paint the shapes from the list
   for (int i = 0; i < model.getShapeList().size(); i++) {
    XShape xshape = model.getShapeList().get(i);
 
+   // use the drawImage() method if the shape is an XImage
    if ((xshape instanceof XImage) && (xshape != null) && !xshape.equals(null) && (xshape.getShape() != null)) {
     XImage ximage = ((XImage) xshape);
     g.drawImage(ximage.getImage(), (int) ximage.getShape().getBounds().getMinX(),
       (int) ximage.getShape().getBounds().getMinY(), (int) ximage.getShape().getBounds().getWidth(),
       (int) ximage.getShape().getBounds().getHeight(), null);
    }
+
+   // else draw normally
    else {
     if ((xshape != null) && (xshape.getColor() != null) && (xshape.getShape() != null)) {
      g.setColor(xshape.getColor());
@@ -291,12 +297,13 @@ public class DrawPanel extends JPanel {
    g.draw(drawXShape.getShape());
   }
 
-  // add the selection marks
-  if ((selections != null) && !selections.equals(null) && (selectedXShape != null) && !selectedXShape.equals(null)) {
-   for (int i = 0; i < selections.length; i++) {
-    if ((selections[i] != null) && !selections[i].equals(null)) {
+  // add the selection marks if applicable
+  if (!export && (resizeBoxes != null) && !resizeBoxes.equals(null) && (selectedXShape != null)
+    && !selectedXShape.equals(null)) {
+   for (int i = 0; i < resizeBoxes.length; i++) {
+    if ((resizeBoxes[i] != null) && !resizeBoxes[i].equals(null)) {
      g.setColor(Color.BLACK);
-     g.draw(selections[i]);
+     g.draw(resizeBoxes[i]);
 
     }
    }
@@ -340,35 +347,35 @@ public class DrawPanel extends JPanel {
  }
 
  /**
-  * Gets the selected C shape.
+  * Gets the selected XShape.
   *
-  * @return the selected C shape
+  * @return the selected XShape
   */
  public XShape getSelectedXShape() {
   return selectedXShape;
  }
 
  /**
-  * Sets the selected C shape.
+  * Sets the selected XShape.
   *
-  * @param selectedXShape the new selected C shape
+  * @param selectedXShape the new selected XShape
   */
  public void setSelectedXShape(XShape selectedXShape) {
   this.selectedXShape = selectedXShape;
  }
 
  /**
-  * Gets the hit selection.
+  * Gets the number of the resize box that was clicked.
   *
-  * @param x the x
-  * @param y the y
-  * @return the hit selection
+  * @param x the x coordinate of the mouse click
+  * @param y the y coordinate of the mouse click
+  * @return the array of resized boxes
   */
- private int getHitSelection(int x, int y) {
-  if ((selections != null) && !selections.equals(null)) {
-   for (int i = 0; i < selections.length; i++) {
-    if ((selections[i] != null) && !selections[i].equals(null)) {
-     if (selections[i].contains(x, y)) {
+ private int getResizeBoxNumber(int x, int y) {
+  if ((resizeBoxes != null) && !resizeBoxes.equals(null)) {
+   for (int i = 0; i < resizeBoxes.length; i++) {
+    if ((resizeBoxes[i] != null) && !resizeBoxes[i].equals(null)) {
+     if (resizeBoxes[i].contains(x, y)) {
       return i;
      }
     }
@@ -378,10 +385,10 @@ public class DrawPanel extends JPanel {
  }
 
  /**
-  * Gets the selections.
+  * Gets an array of the resize boxes.
   *
-  * @param xshape the shape
-  * @return the selections
+  * @param xshape the selected shape that needs resize boxes
+  * @return an array of resize boxes
   */
  public Rectangle2D.Double[] getSelections(XShape xshape) {
 
@@ -406,7 +413,7 @@ public class DrawPanel extends JPanel {
  }
 
  /**
-  * Sets the shape list.
+  * Sets the shape list reference.
   *
   * @param shapeList the new shape list
   */
@@ -414,12 +421,40 @@ public class DrawPanel extends JPanel {
   this.shapeList = shapeList;
  }
 
+ /**
+  * Checks if shapes are being filled when drawn.
+  *
+  * @return true, if is sets the fill
+  */
  public boolean isSetFill() {
   return setFill;
  }
 
+ /**
+  * Sets if shapes shall be filled when drawn.
+  *
+  * @param setFill the new sets the fill
+  */
  public void setSetFill(boolean setFill) {
   this.setFill = setFill;
+ }
+
+ /**
+  * Checks if the shapes are being exported to PNG.
+  *
+  * @return true, if is export
+  */
+ public boolean isExport() {
+  return export;
+ }
+
+ /**
+  * Sets the export mode to false or true.
+  *
+  * @param export the export mode
+  */
+ public void setExport(boolean export) {
+  this.export = export;
  }
 
 }
