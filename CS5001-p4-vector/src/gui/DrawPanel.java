@@ -210,7 +210,7 @@ public class DrawPanel extends JPanel {
        drawXShape.draw(pressX, pressY, e.getX(), e.getY());
        break;
       }
-      
+
      }
     }
 
@@ -267,13 +267,15 @@ public class DrawPanel extends JPanel {
 
    if ((xshape instanceof XImage) && (xshape != null) && !xshape.equals(null) && (xshape.getShape() != null)) {
     XImage ximage = ((XImage) xshape);
-    g.drawImage(ximage.getImage(), ximage.getX1(), ximage.getY1(), ximage.getWidth(), ximage.getHeight(), null);
+    g.drawImage(ximage.getImage(), (int) ximage.getShape().getBounds().getMinX(),
+      (int) ximage.getShape().getBounds().getMinY(), (int) ximage.getShape().getBounds().getWidth(),
+      (int) ximage.getShape().getBounds().getHeight(), null);
    }
    else {
     if ((xshape != null) && (xshape.getColor() != null) && (xshape.getShape() != null)) {
      g.setColor(xshape.getColor());
      g.draw(xshape.getShape());
-     if (xshape.isFill()){
+     if (xshape.isFill()) {
       g.fill(xshape.getShape());
      }
     }
@@ -283,7 +285,7 @@ public class DrawPanel extends JPanel {
   // paint the current drawXShape
   if ((drawXShape != null) && !drawXShape.equals(null)) {
    g.setColor(color);
-   if (drawXShape.isFill()){
+   if (drawXShape.isFill()) {
     g.fill(drawXShape.getShape());
    }
    g.draw(drawXShape.getShape());
@@ -295,7 +297,7 @@ public class DrawPanel extends JPanel {
     if ((selections[i] != null) && !selections[i].equals(null)) {
      g.setColor(Color.BLACK);
      g.draw(selections[i]);
-     
+
     }
    }
   }

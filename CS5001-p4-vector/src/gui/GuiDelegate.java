@@ -48,9 +48,6 @@ public class GuiDelegate implements Observer {
  /** The j menu bar. */
  private JMenuBar jMenuBar;
 
- /** The j tool bar. */
- private JToolBar jToolBar;
-
  /** The draw panel. */
  private DrawPanel drawPanel;
 
@@ -72,7 +69,6 @@ public class GuiDelegate implements Observer {
   this.model = model;
   jFrame = new JFrame("Vectors");
   jMenuBar = new JMenuBar();
-  jToolBar = new JToolBar();
   leftBar = new JToolBar();
   jMenuBar = new JMenuBar();
   drawPanel = new DrawPanel(model);
@@ -88,14 +84,12 @@ public class GuiDelegate implements Observer {
   */
  private void setupComponents() {
   setupMenu();
-  setupToolBar();
   setupLeftBar();
   setupDownBar();
 
   borderPane = jFrame.getContentPane();
   borderPane.setLayout(new BorderLayout());
 
-  borderPane.add(jToolBar, BorderLayout.NORTH);
   borderPane.add(drawPanel, BorderLayout.CENTER);
   borderPane.add(leftBar, BorderLayout.WEST);
   borderPane.add(downBar, BorderLayout.SOUTH);
@@ -136,6 +130,7 @@ public class GuiDelegate implements Observer {
     model.clearUndoRedo();
     model.getShapeList().clear();
     model.notifyObservers();
+    drawPanel.setSelectedXShape(null);
     drawPanel.repaint();
    }
   });
@@ -225,16 +220,6 @@ public class GuiDelegate implements Observer {
    }
   });
   jFrame.setJMenuBar(jMenuBar);
- }
-
- /**
-  * Setup tool bar.
-  */
- private void setupToolBar() {
-
-  JLabel label = new JLabel("Toolbar: ");
-
-  jToolBar.add(label);
  }
 
  /**
