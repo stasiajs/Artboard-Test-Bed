@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Color;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -37,7 +38,8 @@ public class Model extends Observable {
  }
 
  /**
-  * Undo.
+  * Undo action for the shape list. If the undo stack has instances of the shape list, the shape list is reset to the top instance of the undo stack.
+  * Before the shape list is undone, it gets pushed on the redo stack, so it is redoable. After the change, the observers are notified.
   */
  public void undo() {
   if (undoStack.size() > 0) {
@@ -47,7 +49,6 @@ public class Model extends Observable {
 
     // make the last item of the undoStack the list
     shapeList = new ArrayList<XShape>(deserialize((undoStack.pop())));
-    
     setChanged();
     notifyObservers();
    }
@@ -60,7 +61,8 @@ public class Model extends Observable {
  }
 
  /**
-  * Redo.
+  * Redo action for the shape list. If the redo stack has instances of the shape list, the current shape list is set to the top element of the redo stack.
+  * As redo actions are undoable as well, the current state of the shape list is updated, before it is set to the top redo element.
   */
  public void redo() {
   if (redoStack.size() > 0) {
@@ -78,7 +80,8 @@ public class Model extends Observable {
  }
 
  /**
-  * Adds the undo action.
+  * Adds a new undo action. If there were any redoable actions in the redo stack, they are deleted,
+  * so actions that were done before the newest action cannot be redone as this is not reasonable.
   */
  public void addUndoAction() {
   try {
@@ -91,7 +94,7 @@ public class Model extends Observable {
  }
 
  /**
-  * Adds the shape.
+  * Adds a new XShape to the shape list and notifies the observers. Before adding, an undo action is invoked.
   *
   * @param xshape the xshape
   */
@@ -103,10 +106,65 @@ public class Model extends Observable {
  }
 
  /**
-  * Serialize.
+  * Removes a specified shape and notfies the observers. Before removing, an undo action is invoked.
+  *
+  * @param xshape the xshape
+  */
+ public void removeShape(XShape xshape) {
+  addUndoAction();
+  shapeList.remove(xshape);
+  setChanged();
+  notifyObservers();
+ }
+
+ /**
+  * Clears the shape list and notifies the observers. Before clearing, an undo action is invoked.
+  *
+  * @param xshape the xshape
+  */
+ public void clearShapeList() {
+  addUndoAction();
+  shapeList.clear();
+  setChanged();
+  notifyObservers();
+ }
+
+ /**
+  * Sets the color of a specified XShape in the list and notifies the observers. Before changing the color, an undo action is invoked.
+  * 
+  * @param xshape the xshape to change the color
+  * @param color the new color
+  */
+ public void setColor(XShape xshape, Color color) {
+  if (shapeList.contains(xshape)) {
+   addUndoAction();
+   xshape.setColor(color);
+   setChanged();
+   notifyObservers();
+  }
+
+ }
+
+ /**
+  * Specifies if the XShape in the list is filled or not and notifies the observers. Before changing the color, an undo action is invoked.
+  * 
+  * @param the xshape to change the fill
+  * @param fill fill is true or false
+  */
+ public void setFill(XShape xshape, boolean fill) {
+  if (shapeList.contains(xshape)) {
+   addUndoAction();
+   xshape.setFill(fill);
+   setChanged();
+   notifyObservers();
+  }
+ }
+
+ /**
+  * Serializes the shape list. This needs to be done before it is pushed on one of the stacks.
   *
   * @param shapeList the shape list
-  * @return the byte[]
+  * @return a serialized byte array of the shape list
   * @throws IOException Signals that an I/O exception has occurred.
   */
  private byte[] serialize(ArrayList<XShape> shapeList) throws IOException {
@@ -119,15 +177,15 @@ public class Model extends Observable {
  }
 
  /**
-  * Deserialize.
+  * Deserializes the shape list. This is done, when another instance of the shape list is fetched from one of the stacks.
   *
-  * @param data the data
-  * @return the array list
+  * @param serializedShapeList the serialized shape list
+  * @return an array list of shapes
   * @throws IOException Signals that an I/O exception has occurred.
   * @throws ClassNotFoundException the class not found exception
   */
- private ArrayList<XShape> deserialize(byte[] data) throws IOException, ClassNotFoundException {
-  ByteArrayInputStream in = new ByteArrayInputStream(data);
+ private ArrayList<XShape> deserialize(byte[] serializedShapeList) throws IOException, ClassNotFoundException {
+  ByteArrayInputStream in = new ByteArrayInputStream(serializedShapeList);
   ObjectInputStream is = new ObjectInputStream(in);
   is.close();
   in.close();
@@ -144,9 +202,9 @@ public class Model extends Observable {
  }
 
  /**
-  * Save to file.
+  * Save the shape list to file.
   *
-  * @param filename the filename
+  * @param filename the filename of the file that shall be saved
   * @throws IOException 
   */
  public void saveToFile(String filename) throws IOException {
@@ -158,9 +216,9 @@ public class Model extends Observable {
  }
 
  /**
-  * Read from file.
+  * Read shape list from file.
   *
-  * @param filename the filename
+  * @param filename the filename of the file that shall be read
   */
  public void readFromFile(String filename) throws IOException, ClassNotFoundException {
   FileInputStream fis = new FileInputStream(filename);
@@ -171,6 +229,9 @@ public class Model extends Observable {
   fis.close();
  }
 
+ /**
+  * Clears the undo and the redo stack.
+  */
  public void clearUndoRedo() {
   undoStack.clear();
   redoStack.clear();

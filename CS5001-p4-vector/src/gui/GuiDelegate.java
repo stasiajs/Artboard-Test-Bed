@@ -92,7 +92,6 @@ public class GuiDelegate implements Observer {
   borderPane.add(drawPanel, BorderLayout.CENTER);
   borderPane.add(leftBar, BorderLayout.WEST);
   borderPane.add(downBar, BorderLayout.SOUTH);
-  //  borderPane.add(jColorChooser.getPreviewPanel(), BorderLayout.SOUTH);
 
   jFrame.setSize(800, 600);
   jFrame.setVisible(true);
@@ -191,11 +190,7 @@ public class GuiDelegate implements Observer {
       File file = fc.getSelectedFile();
       image = ImageIO.read(file);
       XImage ximage = new XImage(image, 0, 0);
-      model.addUndoAction();
       model.addShape(ximage);
-      drawPanel.setShapeList(model.getShapeList());
-      model.notifyObservers();
-      drawPanel.repaint();
      }
      catch (Exception e1) {
       JOptionPane.showMessageDialog(new JFrame(), "Could not load file!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -321,9 +316,8 @@ public class GuiDelegate implements Observer {
    @Override
    public void actionPerformed(ActionEvent e) {
     if (drawPanel.getSelectedXShape() != null && !drawPanel.getSelectedXShape().equals(null)) {
-     model.addUndoAction();
-     model.getShapeList().remove(drawPanel.getSelectedXShape());
-     model.notifyObservers();
+     model.removeShape(drawPanel.getSelectedXShape());
+     ;
      drawPanel.setSelectedXShape(null);
      drawPanel.repaint();
     }
@@ -347,9 +341,7 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-    model.addUndoAction();
-    model.getShapeList().clear();
-    model.notifyObservers();
+    model.clearShapeList();
     drawPanel.setSelectedXShape(null);
     drawPanel.repaint();
    }
@@ -391,10 +383,8 @@ public class GuiDelegate implements Observer {
    public void actionPerformed(ActionEvent e) {
     Color col = JColorChooser.showDialog(jColorChooser, "Choose Color", drawPanel.getColor());
     drawPanel.setColor(col);
-    if (drawPanel.getSelectedXShape() != null) {
-     model.addUndoAction();
-     drawPanel.getSelectedXShape().setColor(col);
-     drawPanel.repaint();
+    if (drawPanel.getSelectedXShape() != null && !drawPanel.getSelectedXShape().equals(null)) {
+     model.setColor(drawPanel.getSelectedXShape(), col);
     }
     colorButton.setBackground(drawPanel.getColor());
    }
@@ -405,9 +395,7 @@ public class GuiDelegate implements Observer {
    @Override
    public void actionPerformed(ActionEvent e) {
     if (drawPanel.getSelectedXShape() != null && !drawPanel.getSelectedXShape().equals(null)) {
-     model.addUndoAction();
-     drawPanel.getSelectedXShape().setFill(!drawPanel.getSelectedXShape().isFill());
-     drawPanel.repaint();
+     model.setFill(drawPanel.getSelectedXShape(), !drawPanel.getSelectedXShape().isFill());
     }
    }
   });
@@ -419,7 +407,7 @@ public class GuiDelegate implements Observer {
 
  }
 
- /* (non-Javadoc)
+ /** 
   * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
   */
  @Override
