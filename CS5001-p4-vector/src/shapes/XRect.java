@@ -31,12 +31,7 @@ public class XRect extends XShape {
   rect.lineTo(x1, y1);
   rect.closePath();
   
-  this.x1 = x1;
-  this.x2 = x2;
-  this.y1 = y1;
-  this.y2 = y2;
-  width = x2 - x1;
-  height = y2 - y1;
+  updateCoordinates(x1, y1, x2, y2);
   shape = rect;
 
  }

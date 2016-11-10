@@ -2,24 +2,19 @@ package shapes;
 
 import java.awt.geom.Path2D;
 
-import gui.Config;
-
-// TODO: Auto-generated Javadoc
 /**
- * The Class XHexagon.
+ * The Class XHexagon defines a hexagon. It inherits from XShape and overrides its draw() method.
  */
 public class XHexagon extends XShape {
 
  /**
-  * Instantiates a new x hexagon.
+  * Instantiates a new XHexagon.
   */
  public XHexagon() {
-
   shape = new Path2D.Double();
-
  }
 
- /* (non-Javadoc)
+ /**
   * @see shapes.XShape#draw(int, int, int, int)
   */
  @Override
@@ -37,13 +32,7 @@ public class XHexagon extends XShape {
   path.lineTo(x1 + (0.25 * width), y1);
   path.closePath();
 
-  this.x1 = x1;
-  this.x2 = x2;
-  this.y1 = y1;
-  this.y2 = y2;
-  this.width = x2 - x1;
-  this.height = y2 - y1;
-
+  updateCoordinates(x1, y1, x2, y2);
   shape = path;
 
  }

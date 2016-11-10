@@ -30,7 +30,6 @@ import javax.swing.SwingUtilities;
 import model.Model;
 import shapes.XImage;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class GuiDelegate.
  */
@@ -114,7 +113,7 @@ public class GuiDelegate implements Observer {
   JMenuItem importImage = new JMenuItem("Import Image");
   JMenuItem undo = new JMenuItem("Undo step");
   JMenuItem redo = new JMenuItem("Redo step");
-  
+
   file.add(newProject);
   file.add(load);
   file.add(save);
@@ -123,7 +122,7 @@ public class GuiDelegate implements Observer {
   edit.add(redo);
   jMenuBar.add(file);
   jMenuBar.add(edit);
-  
+
   newProject.addActionListener(new ActionListener() {
    @Override
    public void actionPerformed(ActionEvent e) {
@@ -151,7 +150,7 @@ public class GuiDelegate implements Observer {
      }
     }
 
-//    drawPanel.setShapeList(model.getShapeList());
+    //    drawPanel.setShapeList(model.getShapeList());
     model.notifyObservers();
     drawPanel.repaint();
 
@@ -406,6 +405,7 @@ public class GuiDelegate implements Observer {
    @Override
    public void actionPerformed(ActionEvent e) {
     if (drawPanel.getSelectedXShape() != null && !drawPanel.getSelectedXShape().equals(null)) {
+     model.addUndoAction();
      drawPanel.getSelectedXShape().setFill(!drawPanel.getSelectedXShape().isFill());
      drawPanel.repaint();
     }

@@ -3,9 +3,8 @@ package main;
 import gui.GuiDelegate;
 import model.Model;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Main.
+ * The Main class generates a new GuiDelegate and a new Model, that the GuiDelegate can see.
  */
 public class Main {
 

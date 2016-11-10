@@ -13,29 +13,27 @@ import java.util.Stack;
 
 import shapes.XShape;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Model.
+ * The Class Model describes the model of the application. The model holds an ArrayList with the Shapes that can be drawn. Also the model .
  */
 public class Model extends Observable {
 
- /** The shape list. */
+ /** The shape list holds the different XShapes that will be drawn by the GUI. */
  private ArrayList<XShape> shapeList;
 
- /** The redo stack. */
+ /** The redo stack has all the redoable states of the shapeList in a serialized form. */
  private Stack<byte[]> redoStack;
 
- /** The undo stack. */
+ /** The undo stack has all the undoable states of the shapeList in a serialized form. */
  private Stack<byte[]> undoStack;
 
  /**
-  * Instantiates a new model.
+  * Instantiates a new model with a new list of XShapes, an undo stack and a redo stack.
   */
  public Model() {
   shapeList = new ArrayList<XShape>();
   redoStack = new Stack<byte[]>();
   undoStack = new Stack<byte[]>();
-
  }
 
  /**
@@ -49,16 +47,15 @@ public class Model extends Observable {
 
     // make the last item of the undoStack the list
     shapeList = new ArrayList<XShape>(deserialize((undoStack.pop())));
-
+    
+    setChanged();
+    notifyObservers();
    }
    catch (ClassNotFoundException e) {
-    e.printStackTrace();
    }
    catch (IOException e) {
-    e.printStackTrace();
    }
-   setChanged();
-   notifyObservers();
+
   }
  }
 
@@ -70,16 +67,13 @@ public class Model extends Observable {
    try {
     undoStack.push(serialize(shapeList));
     shapeList = deserialize(redoStack.pop());
-
+    setChanged();
+    notifyObservers();
    }
    catch (ClassNotFoundException e) {
-    e.printStackTrace();
    }
    catch (IOException e) {
-    e.printStackTrace();
    }
-   setChanged();
-   notifyObservers();
   }
  }
 
@@ -87,16 +81,12 @@ public class Model extends Observable {
   * Adds the undo action.
   */
  public void addUndoAction() {
-
-  redoStack.clear();
-
   try {
-   // push current state
+   // push current state to the undo stack
+   redoStack.clear();
    undoStack.push(serialize(shapeList));
   }
   catch (IOException e) {
-   // TODO Auto-generated catch block
-   e.printStackTrace();
   }
  }
 
@@ -112,15 +102,6 @@ public class Model extends Observable {
   notifyObservers();
  }
 
- // public void pushToUndoStack(){
- ////  undoStack.push(shapeList.toString());
- //  undoStack.push(shapeList.clone());
- // }
-
- // private ArrayList<XShape> copyShapeList(ArrayList<XShape> shapeList) {
- //  return new ArrayList<XShape>(shapeList);
- // }
-
  /**
   * Serialize.
   *
@@ -128,7 +109,7 @@ public class Model extends Observable {
   * @return the byte[]
   * @throws IOException Signals that an I/O exception has occurred.
   */
- public byte[] serialize(ArrayList<XShape> shapeList) throws IOException {
+ private byte[] serialize(ArrayList<XShape> shapeList) throws IOException {
   ByteArrayOutputStream out = new ByteArrayOutputStream();
   ObjectOutputStream os = new ObjectOutputStream(out);
   os.writeObject(shapeList);
@@ -145,7 +126,7 @@ public class Model extends Observable {
   * @throws IOException Signals that an I/O exception has occurred.
   * @throws ClassNotFoundException the class not found exception
   */
- public ArrayList<XShape> deserialize(byte[] data) throws IOException, ClassNotFoundException {
+ private ArrayList<XShape> deserialize(byte[] data) throws IOException, ClassNotFoundException {
   ByteArrayInputStream in = new ByteArrayInputStream(data);
   ObjectInputStream is = new ObjectInputStream(in);
   is.close();
@@ -190,9 +171,9 @@ public class Model extends Observable {
   fis.close();
  }
 
- public void clearUndoRedo(){
+ public void clearUndoRedo() {
   undoStack.clear();
   redoStack.clear();
  }
- 
+
 }

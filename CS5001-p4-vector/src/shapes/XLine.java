@@ -24,13 +24,7 @@ public class XLine extends XShape {
  @Override
  public void draw(int x1, int y1, int x2, int y2) {
   ((Line2D.Double) shape).setLine(x1, y1, x2, y2);
-
-  this.x1 = x1;
-  this.x2 = x2;
-  this.y1 = y1;
-  this.y2 = y2;
-  width = x2 - x1;
-  height = y2 - y1;
+  updateCoordinates(x1, y1, x2, y2);
 
  }
 
