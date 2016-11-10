@@ -30,8 +30,8 @@ public class XImage extends XRect {
   y1 = y;
   height = bufferedImage.getHeight();
   width = bufferedImage.getWidth();
-  x2=x1+width;
-  y2=y1+height;
+  x2 = x1 + width;
+  y2 = y1 + height;
 
   shape = new Rectangle2D.Double(x, y, width, height);
  }

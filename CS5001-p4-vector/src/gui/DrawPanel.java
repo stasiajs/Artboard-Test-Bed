@@ -66,10 +66,10 @@ public class DrawPanel extends JPanel {
  private int hitResizedBox = Config.NOT_HIT;
 
  /** The reference of the shape list in the model. */
- ArrayList<XShape> shapeList;
+ private ArrayList<XShape> shapeList;
 
  /** The resize boxes that appear when selecting a shape. */
- Rectangle2D.Double[] resizeBoxes;
+ private Rectangle2D.Double[] resizeBoxes;
 
  /**
   * Instantiates a new draw panel.
@@ -80,9 +80,9 @@ public class DrawPanel extends JPanel {
 
   this.model = model;
   shapeList = model.getShapeList();
-  resizeBoxes = new Rectangle2D.Double[4];
+  resizeBoxes = new Rectangle2D.Double[Config.BOX_INT];
 
-  this.setSize(800, 600);
+  this.setSize(Config.PANEL_WIDTH, Config.PANEL_HEIGHT);
   setBackground(Color.WHITE);
   setVisible(true);
   color = Color.BLACK;
@@ -114,7 +114,7 @@ public class DrawPanel extends JPanel {
     drag = false;
     // stop resizing when released
     resize = false;
-    hitResizedBox = 5;
+    hitResizedBox = Config.NOT_HIT;
 
     // reset selection boxes for the selected element as soon as the mouse was released
     if (mode == Config.SELECT_MODE) {
@@ -160,52 +160,50 @@ public class DrawPanel extends JPanel {
     // preview of the shape that is being drawn when in draw mode
     if (mode == Config.DRAW_MODE) {
      switch (shapeMode) {
-      case Config.DRAW_LINE: {
+      case Config.DRAW_LINE:
        drawXShape = new XLine();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
        drawXShape.draw(pressX, pressY, e.getX(), e.getY());
        break;
-      }
-      case Config.DRAW_RECT: {
+
+      case Config.DRAW_RECT:
        drawXShape = new XRect();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
        drawXShape.draw(pressX, pressY, e.getX(), e.getY());
        break;
-      }
 
-      case Config.DRAW_SQUARE: {
+      case Config.DRAW_SQUARE:
        drawXShape = new XSquare();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
        drawXShape.draw(pressX, pressY, e.getX(), e.getY());
        break;
-      }
 
-      case Config.DRAW_CIRCLE: {
+      case Config.DRAW_CIRCLE:
        drawXShape = new XCircle();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
        drawXShape.draw(pressX, pressY, e.getX(), e.getY());
        break;
-      }
 
-      case Config.DRAW_ELLIPSE: {
+      case Config.DRAW_ELLIPSE:
        drawXShape = new XEllipse();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
        drawXShape.draw(pressX, pressY, e.getX(), e.getY());
        break;
-      }
 
-      case Config.DRAW_HEX: {
+      case Config.DRAW_HEX:
        drawXShape = new XHexagon();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
        drawXShape.draw(pressX, pressY, e.getX(), e.getY());
        break;
-      }
+
+      default:
+       break;
 
      }
     }
@@ -217,26 +215,26 @@ public class DrawPanel extends JPanel {
      int tempHitSelection = getResizeBoxNumber(e.getX(), e.getY());
 
      // if one of the boxes was dragged, start the resize mode
-     if ((resize == false) && (tempHitSelection >= 0) && (tempHitSelection < Config.NOT_HIT)) {
+     if (!resize && tempHitSelection >= 0 && tempHitSelection < Config.NOT_HIT) {
       model.addUndoAction();
       hitResizedBox = tempHitSelection;
       resize = true;
      }
 
      // execute the resize mode as long as the mouse is pressed
-     else if (resize == true) {
+     else if (resize) {
       resizeBoxes = getSelections(selectedXShape);
       selectedXShape.resize(e.getX(), e.getY(), hitResizedBox);
      }
 
      // check if the shape was clicked and initiate the drag mode if so
-     else if (selectedXShape.isClicked(e.getX(), e.getY()) && (drag == false)) {
+     else if (selectedXShape.isClicked(e.getX(), e.getY()) && !drag) {
       model.addUndoAction();
       drag = true;
      }
 
      // execute the drag mode as long as the mouse is clicked
-     else if (drag == true) {
+     else if (drag) {
       selectedXShape.dragTo(e.getX(), e.getY());
       resizeBoxes = getSelections(selectedXShape);
      }
@@ -392,16 +390,19 @@ public class DrawPanel extends JPanel {
   */
  public Rectangle2D.Double[] getSelections(XShape xshape) {
 
-  Rectangle2D.Double[] selections = new Rectangle2D.Double[4];
+  Rectangle2D.Double[] selections = new Rectangle2D.Double[Config.BOX_INT];
   if ((xshape != null) && !xshape.equals(null)) {
-   selections[0] = new Rectangle2D.Double(xshape.getShape().getBounds().getMinX() - 3,
-     xshape.getShape().getBounds().getMinY() - 3, 6, 6);
-   selections[1] = new Rectangle2D.Double(xshape.getShape().getBounds().getMaxX() - 3,
-     xshape.getShape().getBounds().getMinY() - 3, 6, 6);
-   selections[2] = new Rectangle2D.Double(xshape.getShape().getBounds().getMinX() - 3,
-     xshape.getShape().getBounds().getMaxY() - 3, 6, 6);
-   selections[3] = new Rectangle2D.Double(xshape.getShape().getBounds().getMaxX() - 3,
-     xshape.getShape().getBounds().getMaxY() - 3, 6, 6);
+
+   selections[Config.HIT_TOP_LEFT] = new Rectangle2D.Double(xshape.getShape().getBounds().getMinX() - Config.BOX_SIZE,
+     xshape.getShape().getBounds().getMinY() - Config.BOX_SIZE, 2 * Config.BOX_SIZE, 2 * Config.BOX_SIZE);
+   selections[Config.HIT_TOP_RIGHT] = new Rectangle2D.Double(xshape.getShape().getBounds().getMaxX() - Config.BOX_SIZE,
+     xshape.getShape().getBounds().getMinY() - Config.BOX_SIZE, 2 * Config.BOX_SIZE, 2 * Config.BOX_SIZE);
+   selections[Config.HIT_BOTTOM_LEFT] = new Rectangle2D.Double(
+     xshape.getShape().getBounds().getMinX() - Config.BOX_SIZE,
+     xshape.getShape().getBounds().getMaxY() - Config.BOX_SIZE, 2 * Config.BOX_SIZE, 2 * Config.BOX_SIZE);
+   selections[Config.HIT_BOTTOM_RIGHT] = new Rectangle2D.Double(
+     xshape.getShape().getBounds().getMaxX() - Config.BOX_SIZE,
+     xshape.getShape().getBounds().getMaxY() - Config.BOX_SIZE, 2 * Config.BOX_SIZE, 2 * Config.BOX_SIZE);
 
    return selections;
   }

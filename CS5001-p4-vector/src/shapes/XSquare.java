@@ -19,11 +19,10 @@ public class XSquare extends XRect {
   int shortSide = Math.min(Math.abs(x2 - x1), Math.abs(y2 - y1));
   int newX = x1 > x2 ? x1 - shortSide : x1;
   int newY = y1 > y2 ? y1 - shortSide : y1;
-  
+
   // use the super method with the side limit
   super.draw(newX, newY, newX + shortSide, newY + shortSide);
  }
-
 
  /** 
   * Resize a square.
@@ -36,7 +35,7 @@ public class XSquare extends XRect {
   int shortSide = 0;
 
   if (corner == Config.HIT_BOTTOM_RIGHT) {
-   shortSide = Math.min(Math.abs(x - x1), Math.abs(y - y1));   
+   shortSide = Math.min(Math.abs(x - x1), Math.abs(y - y1));
    super.draw(x1, y1, x1 + shortSide, y1 + shortSide);
 
   }

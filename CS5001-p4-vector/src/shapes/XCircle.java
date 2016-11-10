@@ -14,10 +14,10 @@ public class XCircle extends XEllipse {
   */
  @Override
  public void draw(int x1, int y1, int x2, int y2) {
-  
+
   // find out the x and y components of the radius as the shortest side
   int radius = Math.min(Math.abs(x2 - x1), Math.abs(y2 - y1));
-  
+
   // use the ellipse method to draw the circle using the x and y component of the radius
   int newX = x1 > x2 ? x1 - radius : x1;
   int newY = y1 > y2 ? y1 - radius : y1;

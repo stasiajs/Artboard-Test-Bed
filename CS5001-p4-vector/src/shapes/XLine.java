@@ -35,7 +35,7 @@ public class XLine extends XShape {
   */
  @Override
  public boolean isClicked(int x, int y) {
-  return shape.intersects(x - 1, y - 1, 3, 3);
+  return shape.intersects(x - 1, y - 1, Config.INTERSECT_SIZE, Config.INTERSECT_SIZE);
  }
 
 }

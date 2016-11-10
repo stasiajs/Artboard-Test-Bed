@@ -95,7 +95,7 @@ public class GuiDelegate implements Observer {
   borderPane.add(leftBar, BorderLayout.WEST);
   borderPane.add(downBar, BorderLayout.SOUTH);
 
-  jFrame.setSize(800, 600);
+  jFrame.setSize(Config.PANEL_WIDTH, Config.PANEL_WIDTH);
   jFrame.setVisible(true);
   jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -189,7 +189,7 @@ public class GuiDelegate implements Observer {
     JFileChooser fc = new JFileChooser();
     int returnVal = fc.showSaveDialog(fc);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
-     
+
      try {
       BufferedImage exportImg = new BufferedImage(drawPanel.getWidth(), drawPanel.getHeight(),
         BufferedImage.TYPE_INT_RGB);
@@ -346,7 +346,6 @@ public class GuiDelegate implements Observer {
    public void actionPerformed(ActionEvent e) {
     if (drawPanel.getSelectedXShape() != null && !drawPanel.getSelectedXShape().equals(null)) {
      model.removeShape(drawPanel.getSelectedXShape());
-     ;
      drawPanel.setSelectedXShape(null);
      drawPanel.repaint();
     }

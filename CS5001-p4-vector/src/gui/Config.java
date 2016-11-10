@@ -1,6 +1,5 @@
 package gui;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Config.
  */
@@ -44,4 +43,20 @@ public class Config {
 
  /** The Constant NOT_HIT is the number if no resize box was hit. */
  public static final int NOT_HIT = 4;
+
+ /** The Constant BOX_SIZE determines the size of the resize boxes. */
+ public static final int BOX_SIZE = 3;
+
+ /** The Constant PANEL_HEIGHT defines the height of the draw panel. */
+ public static final int PANEL_HEIGHT = 600;
+
+ /** The Constant PANEL_WIDTH defines the width of the draw panel. */
+ public static final int PANEL_WIDTH = 600;
+
+ /** The Constant BOX_INT defines the number of resize boxes per shape. */
+ public static final int BOX_INT = 4;
+
+ /** The Constant INTERSECT_SIZE defines the size of the intersect rectangle for selecting a line shape. */
+ public static final int INTERSECT_SIZE = 3;
+
 }

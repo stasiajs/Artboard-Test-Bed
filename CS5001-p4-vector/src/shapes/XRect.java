@@ -30,7 +30,7 @@ public class XRect extends XShape {
   rect.lineTo(x1, y2);
   rect.lineTo(x1, y1);
   rect.closePath();
-  
+
   updateCoordinates(x1, y1, x2, y2);
   shape = rect;
 

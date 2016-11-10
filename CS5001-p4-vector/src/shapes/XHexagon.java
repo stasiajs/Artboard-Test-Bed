@@ -7,6 +7,10 @@ import java.awt.geom.Path2D;
  */
 public class XHexagon extends XShape {
 
+ private final double half = 0.5;
+ private final double quarter = 0.25;
+ private final double threequarter = 0.75;
+
  /**
   * Instantiates a new XHexagon.
   */
@@ -15,6 +19,8 @@ public class XHexagon extends XShape {
  }
 
  /**
+  * Draws the Hexagon according to its definition.
+  * 
   * @see shapes.XShape#draw(int, int, int, int)
   */
  @Override
@@ -23,13 +29,13 @@ public class XHexagon extends XShape {
   double height = y2 - y1;
   Path2D.Double path = new Path2D.Double();
 
-  path.moveTo(x1 + (0.25 * width), y1);
-  path.lineTo(x1 + (0.75 * width), y1);
-  path.lineTo(x2, y1 + (0.5 * height));
-  path.lineTo(x1 + (0.75 * width), y2);
-  path.lineTo(x1 + (0.25 * width), y2);
-  path.lineTo(x1, y1 + (0.5 * height));
-  path.lineTo(x1 + (0.25 * width), y1);
+  path.moveTo(x1 + (quarter * width), y1);
+  path.lineTo(x1 + (threequarter * width), y1);
+  path.lineTo(x2, y1 + (half * height));
+  path.lineTo(x1 + (threequarter * width), y2);
+  path.lineTo(x1 + (quarter * width), y2);
+  path.lineTo(x1, y1 + (half * height));
+  path.lineTo(x1 + (quarter * width), y1);
   path.closePath();
 
   updateCoordinates(x1, y1, x2, y2);

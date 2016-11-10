@@ -119,8 +119,6 @@ public class Model extends Observable {
 
  /**
   * Clears the shape list and notifies the observers. Before clearing, an undo action is invoked.
-  *
-  * @param xshape the xshape
   */
  public void clearShapeList() {
   addUndoAction();
@@ -148,8 +146,8 @@ public class Model extends Observable {
  /**
   * Specifies if the XShape in the list is filled or not and notifies the observers. Before changing the color, an undo action is invoked.
   * 
-  * @param the xshape to change the fill
-  * @param fill fill is true or false
+  * @param xshape the XShape to change the fill
+  * @param fill the fill is true or false
   */
  public void setFill(XShape xshape, boolean fill) {
   if (shapeList.contains(xshape)) {
@@ -205,7 +203,7 @@ public class Model extends Observable {
   * Save the shape list to file.
   *
   * @param filename the filename of the file that shall be saved
-  * @throws IOException 
+  * @throws IOException Signals that an I/O exception has occurred.
   */
  public void saveToFile(String filename) throws IOException {
   FileOutputStream fos = new FileOutputStream(filename);
@@ -219,6 +217,8 @@ public class Model extends Observable {
   * Read shape list from file.
   *
   * @param filename the filename of the file that shall be read
+  * @throws IOException Signals that an I/O exception has occurred.
+  * @throws ClassNotFoundException the class not found exception
   */
  public void readFromFile(String filename) throws IOException, ClassNotFoundException {
   FileInputStream fis = new FileInputStream(filename);
