@@ -115,7 +115,7 @@ public class DrawPanel extends JPanel {
 
     if (mode == Config.SELECT_MODE) {
      if ((selectedXShape != null) && !selectedXShape.equals(null)) {
-      selectedXShape.updateBounds();
+//      selectedXShape.updateBounds();
       selections = getSelections(selectedXShape);
 
      }

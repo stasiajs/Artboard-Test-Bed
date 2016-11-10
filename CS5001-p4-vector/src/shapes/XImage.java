@@ -27,13 +27,7 @@ public class XImage extends XRect {
   */
  public XImage(BufferedImage bufferedImage, int x, int y) {
   serializedImage = setImage(bufferedImage);
-  System.out.println(serializedImage.length);
-  x1 = x;
-  y1 = y;
-  height = bufferedImage.getHeight();
-  width = bufferedImage.getWidth();
-
-  shape = new Rectangle2D.Double(x, y, width, height);
+  shape = new Rectangle2D.Double(x, y, bufferedImage.getWidth(), bufferedImage.getHeight());
  }
 
  /**

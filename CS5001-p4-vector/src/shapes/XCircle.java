@@ -23,6 +23,7 @@ public class XCircle extends XEllipse {
 
  }
 
+
  /* (non-Javadoc)
   * @see shapes.XEllipse#resize(int, int, int)
   */
@@ -32,22 +33,22 @@ public class XCircle extends XEllipse {
   int s = 0;
 
   if (corner == Config.HIT_BOTTOM_RIGHT) {
-   s = Math.min(Math.abs(x - x1), Math.abs(y - y1));
-   super.draw(x1, y1, x1 + s, y1 + s);
+   s = Math.min(Math.abs(x - (int)shape.getBounds().getMinX()), Math.abs(y - (int)shape.getBounds().getMinY()));
+   super.draw((int)shape.getBounds().getMinX(), (int)shape.getBounds().getMinY(), (int)shape.getBounds().getMinX() + s, (int)shape.getBounds().getMinY() + s);
 
   }
   else if (corner == Config.HIT_TOP_LEFT) {
-   s = Math.min(Math.abs(x - x2), Math.abs(y - y2));
-   super.draw(x2 - s, y2 - s, x2, y2);
+   s = Math.min(Math.abs(x - (int)shape.getBounds().getMaxX()), Math.abs(y - (int)shape.getBounds().getMaxY()));
+   super.draw((int)shape.getBounds().getMaxX() - s, (int)shape.getBounds().getMaxY() - s, (int)shape.getBounds().getMaxX(), (int)shape.getBounds().getMaxY());
 
   }
   else if (corner == Config.HIT_TOP_RIGHT) {
-   s = Math.min(Math.abs(x - x1), Math.abs(y - y2));
-   super.draw(x1, y2 - s, x1 + s, y2);
+   s = Math.min(Math.abs(x - (int)shape.getBounds().getMinX()), Math.abs(y - (int)shape.getBounds().getMaxY()));
+   super.draw((int)shape.getBounds().getMinX(), (int)shape.getBounds().getMaxY() - s, (int)shape.getBounds().getMinX() + s, (int)shape.getBounds().getMaxY());
   }
   else if (corner == Config.HIT_BOTTOM_LEFT) {
-   s = Math.min(Math.abs(x - x2), Math.abs(y - y1));
-   super.draw(x2 - s, y1, x2, y1 + s);
+   s = Math.min(Math.abs(x - (int)shape.getBounds().getMaxX()), Math.abs(y - (int)shape.getBounds().getMinY()));
+   super.draw((int)shape.getBounds().getMaxX() - s, (int)shape.getBounds().getMinY(), (int)shape.getBounds().getMaxX(), (int)shape.getBounds().getMinY() + s);
   }
  }
 
