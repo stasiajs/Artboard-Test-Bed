@@ -17,12 +17,12 @@ public class XLine extends XShape {
  }
 
  /**
-  * Draws a new line with the two coordinates x1/y1 and x2/y2.
+  * Construct a new line with the two coordinates x1/y1 and x2/y2.
   *
-  * @see shapes.XShape#draw(int, int, int, int)
+  * @see shapes.XShape#construct(int, int, int, int)
   */
  @Override
- public void draw(int x1, int y1, int x2, int y2) {
+ public void construct(int x1, int y1, int x2, int y2) {
   ((Line2D.Double) shape).setLine(x1, y1, x2, y2);
   updateCoordinates(x1, y1, x2, y2);
 

@@ -10,10 +10,10 @@ public class XCircle extends XEllipse {
  /**
   * Draw the circle. The x and y components of the radius are the shorter side of the drawn rectangle.
   *
-  * @see shapes.XEllipse#draw(int, int, int, int)
+  * @see shapes.XEllipse#construct(int, int, int, int)
   */
  @Override
- public void draw(int x1, int y1, int x2, int y2) {
+ public void construct(int x1, int y1, int x2, int y2) {
 
   // find out the x and y components of the radius as the shortest side
   int radius = Math.min(Math.abs(x2 - x1), Math.abs(y2 - y1));
@@ -22,7 +22,7 @@ public class XCircle extends XEllipse {
   int newX = x1 > x2 ? x1 - radius : x1;
   int newY = y1 > y2 ? y1 - radius : y1;
 
-  super.draw(newX, newY, newX + radius, newY + radius);
+  super.construct(newX, newY, newX + radius, newY + radius);
 
  }
 
@@ -36,21 +36,21 @@ public class XCircle extends XEllipse {
   int s = 0;
   if (corner == Config.HIT_BOTTOM_RIGHT) {
    s = Math.min(Math.abs(x - x1), Math.abs(y - y1));
-   super.draw(x1, y1, x1 + s, y1 + s);
+   super.construct(x1, y1, x1 + s, y1 + s);
 
   }
   else if (corner == Config.HIT_TOP_LEFT) {
    s = Math.min(Math.abs(x - x2), Math.abs(y - y2));
-   super.draw(x2 - s, y2 - s, x2, y2);
+   super.construct(x2 - s, y2 - s, x2, y2);
 
   }
   else if (corner == Config.HIT_TOP_RIGHT) {
    s = Math.min(Math.abs(x - x1), Math.abs(y - y2));
-   super.draw(x1, y2 - s, x1 + s, y2);
+   super.construct(x1, y2 - s, x1 + s, y2);
   }
   else if (corner == Config.HIT_BOTTOM_LEFT) {
    s = Math.min(Math.abs(x - x2), Math.abs(y - y1));
-   super.draw(x2 - s, y1, x2, y1 + s);
+   super.construct(x2 - s, y1, x2, y1 + s);
   }
  }
 

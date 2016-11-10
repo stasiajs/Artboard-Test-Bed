@@ -193,11 +193,11 @@ public class GuiDelegate implements Observer {
       BufferedImage exportImg = new BufferedImage(drawPanel.getWidth(), drawPanel.getHeight(),
         BufferedImage.TYPE_INT_RGB);
       Graphics2D exportGraphics = exportImg.createGraphics();
-      drawPanel.setExport(true);
+      drawPanel.setExporting(true);
       drawPanel.paintComponent(exportGraphics);
       File file = fc.getSelectedFile();
       ImageIO.write(exportImg, "png", file);
-      drawPanel.setExport(false);
+      drawPanel.setExporting(false);
      }
      catch (IOException e1) {
       JOptionPane.showMessageDialog(new JFrame(), "Could not save file!", "Error", JOptionPane.ERROR_MESSAGE);

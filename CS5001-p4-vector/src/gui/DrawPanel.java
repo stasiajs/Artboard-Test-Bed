@@ -158,42 +158,42 @@ public class DrawPanel extends JPanel {
        drawXShape = new XLine();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
-       drawXShape.draw(pressX, pressY, e.getX(), e.getY());
+       drawXShape.construct(pressX, pressY, e.getX(), e.getY());
        break;
 
       case Config.DRAW_RECT:
        drawXShape = new XRect();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
-       drawXShape.draw(pressX, pressY, e.getX(), e.getY());
+       drawXShape.construct(pressX, pressY, e.getX(), e.getY());
        break;
 
       case Config.DRAW_SQUARE:
        drawXShape = new XSquare();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
-       drawXShape.draw(pressX, pressY, e.getX(), e.getY());
+       drawXShape.construct(pressX, pressY, e.getX(), e.getY());
        break;
 
       case Config.DRAW_CIRCLE:
        drawXShape = new XCircle();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
-       drawXShape.draw(pressX, pressY, e.getX(), e.getY());
+       drawXShape.construct(pressX, pressY, e.getX(), e.getY());
        break;
 
       case Config.DRAW_ELLIPSE:
        drawXShape = new XEllipse();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
-       drawXShape.draw(pressX, pressY, e.getX(), e.getY());
+       drawXShape.construct(pressX, pressY, e.getX(), e.getY());
        break;
 
       case Config.DRAW_HEX:
        drawXShape = new XHexagon();
        drawXShape.setColor(color);
        drawXShape.setFill(setFill);
-       drawXShape.draw(pressX, pressY, e.getX(), e.getY());
+       drawXShape.construct(pressX, pressY, e.getX(), e.getY());
        break;
 
       default:
@@ -428,18 +428,18 @@ public class DrawPanel extends JPanel {
  /**
   * Checks if the shapes are being exported to PNG.
   *
-  * @return true, if is export
+  * @return true, if exporting
   */
- public boolean isExport() {
+ public boolean isExporting() {
   return export;
  }
 
  /**
-  * Sets the export mode to false or true.
+  * Sets the PNG export mode to false or true.
   *
   * @param export the export mode
   */
- public void setExport(boolean export) {
+ public void setExporting(boolean export) {
   this.export = export;
  }
 

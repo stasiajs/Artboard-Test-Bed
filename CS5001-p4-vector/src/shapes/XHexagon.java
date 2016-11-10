@@ -21,10 +21,10 @@ public class XHexagon extends XShape {
  /**
   * Draws the Hexagon according to its definition.
   *
-  * @see shapes.XShape#draw(int, int, int, int)
+  * @see shapes.XShape#construct(int, int, int, int)
   */
  @Override
- public void draw(int x1, int y1, int x2, int y2) {
+ public void construct(int x1, int y1, int x2, int y2) {
   double width = x2 - x1;
   double height = y2 - y1;
   Path2D.Double path = new Path2D.Double();

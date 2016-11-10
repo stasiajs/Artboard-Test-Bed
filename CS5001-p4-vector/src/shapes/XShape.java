@@ -52,14 +52,14 @@ public abstract class XShape implements Serializable {
  }
 
  /**
-  * Draw the shape.
+  * Construct the shape.
   *
   * @param x1 the x1 coordinate of the shape's frame
   * @param y1 the y1 coordinate of the shape's frame
   * @param x2 the x2 coordinate of the shape's frame
   * @param y2 the y2 coordinate of the shape's frame
   */
- public abstract void draw(int x1, int y1, int x2, int y2);
+ public abstract void construct(int x1, int y1, int x2, int y2);
 
  /**
   * Drag the shape to a specific position.
@@ -68,7 +68,7 @@ public abstract class XShape implements Serializable {
   * @param y the y
   */
  public void dragTo(int x, int y) {
-  draw(x - (width / 2), y - (height / 2), x + (width / 2), y + (height / 2));
+  construct(x - (width / 2), y - (height / 2), x + (width / 2), y + (height / 2));
  }
 
  /**
@@ -81,17 +81,17 @@ public abstract class XShape implements Serializable {
  public void resize(int x, int y, int corner) {
   //  if (x2 == getShape().getBounds().getMaxX() && y2 == getShape().getBounds().getMaxY()) {
   if (corner == Config.HIT_BOTTOM_RIGHT) {
-   draw(x1, y1, x, y);
+   construct(x1, y1, x, y);
   }
   else if (corner == Config.HIT_TOP_LEFT) {
-   draw(x, y, x2, y2);
+   construct(x, y, x2, y2);
 
   }
   else if (corner == Config.HIT_TOP_RIGHT) {
-   draw(x1, y, x, y2);
+   construct(x1, y, x, y2);
   }
   else if (corner == Config.HIT_BOTTOM_LEFT) {
-   draw(x, y1, x2, y);
+   construct(x, y1, x2, y);
   }
  }
 

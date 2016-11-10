@@ -15,12 +15,12 @@ public class XRect extends XShape {
  }
 
  /**
-  * Draws a rectangular shape using a Path2D.Double.
+  * Construct a rectangular shape using a Path2D.Double.
   *
-  * @see shapes.XShape#draw(int, int, int, int)
+  * @see shapes.XShape#construct(int, int, int, int)
   */
  @Override
- public void draw(int x1, int y1, int x2, int y2) {
+ public void construct(int x1, int y1, int x2, int y2) {
 
   Path2D.Double rect = new Path2D.Double();
 
