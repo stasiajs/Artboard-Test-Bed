@@ -215,7 +215,7 @@ public class DrawPanel extends JPanel {
      int tempHitSelection = getResizeBoxNumber(e.getX(), e.getY());
 
      // if one of the boxes was dragged, start the resize mode
-     if (!resize && tempHitSelection >= 0 && tempHitSelection < Config.NOT_HIT) {
+     if (!resize && (tempHitSelection >= 0) && (tempHitSelection < Config.NOT_HIT)) {
       model.addUndoAction();
       hitResizedBox = tempHitSelection;
       resize = true;
@@ -250,11 +250,11 @@ public class DrawPanel extends JPanel {
 
  }
 
- /** 
+ /**
   * The paintComponent paints all the shapes on the panel. First all the shapes from the list are painted.
   * Then if a new shape is being drawn, it gets painted.
   * At last the selection boxes are added, if there is a selected element and if the image is not being exported to PNG at the moment.
-  * 
+  *
   * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
   */
  @Override

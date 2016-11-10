@@ -9,7 +9,7 @@ public class XCircle extends XEllipse {
 
  /**
   * Draw the circle. The x and y components of the radius are the shorter side of the drawn rectangle.
-  * 
+  *
   * @see shapes.XEllipse#draw(int, int, int, int)
   */
  @Override
@@ -28,7 +28,7 @@ public class XCircle extends XEllipse {
 
  /**
   * Resize the circle. The shortest side of the rectangle is taken as for the x and y components of the radius.
-  * 
+  *
   * @see shapes.XEllipse#resize(int, int, int)
   */
  @Override

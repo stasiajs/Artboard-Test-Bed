@@ -33,7 +33,7 @@ import model.Model;
 import shapes.XImage;
 
 /**
- * The Class GuiDelegate describes the GUI elements of the application. It has a menu bar for file and edit operations, a sidebar for drawing operation, a bottom bar for selecting color and fill for shapes, and a JPanel for drawing. 
+ * The Class GuiDelegate describes the GUI elements of the application. It has a menu bar for file and edit operations, a sidebar for drawing operation, a bottom bar for selecting color and fill for shapes, and a JPanel for drawing.
  */
 public class GuiDelegate implements Observer {
 
@@ -344,7 +344,7 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-    if (drawPanel.getSelectedXShape() != null && !drawPanel.getSelectedXShape().equals(null)) {
+    if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
      model.removeShape(drawPanel.getSelectedXShape());
      drawPanel.setSelectedXShape(null);
      drawPanel.repaint();
@@ -410,7 +410,7 @@ public class GuiDelegate implements Observer {
    public void actionPerformed(ActionEvent e) {
     Color col = JColorChooser.showDialog(jColorChooser, "Choose Color", drawPanel.getColor());
     drawPanel.setColor(col);
-    if (drawPanel.getSelectedXShape() != null && !drawPanel.getSelectedXShape().equals(null)) {
+    if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
      model.setColor(drawPanel.getSelectedXShape(), col);
     }
     colorButton.setBackground(drawPanel.getColor());
@@ -421,7 +421,7 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-    if (drawPanel.getSelectedXShape() != null && !drawPanel.getSelectedXShape().equals(null)) {
+    if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
      model.setFill(drawPanel.getSelectedXShape(), !drawPanel.getSelectedXShape().isFill());
     }
    }
@@ -436,7 +436,7 @@ public class GuiDelegate implements Observer {
 
  /**
   * Updates the shape list reference and repaints the shapes.
-  * 
+  *
   * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
   */
  @Override

@@ -129,7 +129,7 @@ public class Model extends Observable {
 
  /**
   * Sets the color of a specified XShape in the list and notifies the observers. Before changing the color, an undo action is invoked.
-  * 
+  *
   * @param xshape the xshape to change the color
   * @param color the new color
   */
@@ -145,7 +145,7 @@ public class Model extends Observable {
 
  /**
   * Specifies if the XShape in the list is filled or not and notifies the observers. Before changing the color, an undo action is invoked.
-  * 
+  *
   * @param xshape the XShape to change the fill
   * @param fill the fill is true or false
   */

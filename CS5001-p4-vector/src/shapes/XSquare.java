@@ -3,13 +3,13 @@ package shapes;
 import gui.Config;
 
 /**
- * The Class XSquare defines a square with an identical side length. It inherits from 
+ * The Class XSquare defines a square with an identical side length. It inherits from
  */
 public class XSquare extends XRect {
 
  /**
   * Draw a square.
-  * 
+  *
   * @see shapes.XRect#draw(int, int, int, int)
   */
  @Override
@@ -24,9 +24,9 @@ public class XSquare extends XRect {
   super.draw(newX, newY, newX + shortSide, newY + shortSide);
  }
 
- /** 
+ /**
   * Resize a square.
-  * 
+  *
   * @see shapes.XRect#resize(int, int, int)
   */
  @Override

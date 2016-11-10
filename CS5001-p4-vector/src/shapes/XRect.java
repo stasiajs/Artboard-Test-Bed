@@ -16,7 +16,7 @@ public class XRect extends XShape {
 
  /**
   * Draws a rectangular shape using a Path2D.Double.
-  * 
+  *
   * @see shapes.XShape#draw(int, int, int, int)
   */
  @Override

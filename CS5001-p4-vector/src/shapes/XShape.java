@@ -8,7 +8,7 @@ import gui.Config;
 
 /**
  * XShape describes an abstract eXtendedShape that holds an underlying shape, a color, the information if the shape shall be filled with color
- * and basic coordinates as well as height and width. Also the abstract XShape provide methods for drawing, resizing, dragging and click 
+ * and basic coordinates as well as height and width. Also the abstract XShape provide methods for drawing, resizing, dragging and click
  * recognition. XShapes are serializable as they need to be saved to file and for undo/redo purposes.
  */
 public abstract class XShape implements Serializable {

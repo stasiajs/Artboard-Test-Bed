@@ -20,7 +20,7 @@ public class XHexagon extends XShape {
 
  /**
   * Draws the Hexagon according to its definition.
-  * 
+  *
   * @see shapes.XShape#draw(int, int, int, int)
   */
  @Override

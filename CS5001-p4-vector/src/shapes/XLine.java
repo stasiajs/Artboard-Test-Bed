@@ -18,7 +18,7 @@ public class XLine extends XShape {
 
  /**
   * Draws a new line with the two coordinates x1/y1 and x2/y2.
-  * 
+  *
   * @see shapes.XShape#draw(int, int, int, int)
   */
  @Override
@@ -30,7 +30,7 @@ public class XLine extends XShape {
 
  /**
   * Checks if a line is clicked on. Uses the intersects() method of Shape, as the contain() method does not work for lines.
-  * 
+  *
   * @see shapes.XShape#isClicked(int, int)
   */
  @Override
