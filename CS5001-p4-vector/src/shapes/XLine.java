@@ -1,5 +1,6 @@
 package shapes;
 
+import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 
 import gui.Config;
@@ -36,6 +37,19 @@ public class XLine extends XShape {
  @Override
  public boolean isClicked(int x, int y) {
   return shape.intersects(x - 1, y - 1, Config.INTERSECT_SIZE, Config.INTERSECT_SIZE);
+ }
+
+ /**
+  * Paint the line.
+  *
+  * @see shapes.XShape#paint(java.awt.Graphics2D)
+  */
+ @Override
+ public void paint(Graphics2D g) {
+  if ((getColor() != null) && !getColor().equals(null)) {
+   g.setColor(getColor());
+  }
+  g.draw(getShape());
  }
 
 }

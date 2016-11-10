@@ -7,7 +7,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -15,7 +14,6 @@ import model.Model;
 import shapes.XCircle;
 import shapes.XEllipse;
 import shapes.XHexagon;
-import shapes.XImage;
 import shapes.XLine;
 import shapes.XRect;
 import shapes.XShape;
@@ -259,28 +257,10 @@ public class DrawPanel extends JPanel {
   // paint the shapes from the list
   for (int i = 0; i < model.getShapeList().size(); i++) {
    XShape xshape = model.getShapeList().get(i);
-
-   // use the drawImage() method if the shape is an XImage
-   if ((xshape instanceof XImage) && (xshape != null) && !xshape.equals(null) && (xshape.getShape() != null)) {
-    XImage ximage = ((XImage) xshape);
-    g.drawImage(ximage.getImage(), (int) ximage.getShape().getBounds().getMinX(),
-      (int) ximage.getShape().getBounds().getMinY(), (int) ximage.getShape().getBounds().getWidth(),
-      (int) ximage.getShape().getBounds().getHeight(), null);
-   }
-
-   // else draw normally
-   else {
-    if ((xshape != null) && (xshape.getColor() != null) && (xshape.getShape() != null)) {
-     g.setColor(xshape.getColor());
-     g.draw(xshape.getShape());
-     if (xshape.isFill()) {
-      g.fill(xshape.getShape());
-     }
-    }
-   }
+   xshape.paint(g);
   }
 
-  // paint the current drawXShape
+  // paint the shape that is currently being drawn
   if ((drawXShape != null) && !drawXShape.equals(null)) {
    g.setColor(color);
    if (drawXShape.isFill()) {

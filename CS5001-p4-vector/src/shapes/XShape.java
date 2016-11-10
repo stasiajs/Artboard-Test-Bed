@@ -1,6 +1,7 @@
 package shapes;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.io.Serializable;
 
@@ -117,6 +118,21 @@ public abstract class XShape implements Serializable {
   this.y2 = y2;
   width = x2 - x1;
   height = y2 - y1;
+ }
+
+ /**
+  * Paint the shape.
+  *
+  * @param g the graphics
+  */
+ public void paint(Graphics2D g) {
+  if ((color != null) && !color.equals(null)) {
+   g.setColor(color);
+  }
+  if (fill) {
+   g.fill(shape);
+  }
+  g.draw(shape);
  }
 
  /**

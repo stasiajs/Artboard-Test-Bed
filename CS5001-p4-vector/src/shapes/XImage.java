@@ -1,5 +1,6 @@
 package shapes;
 
+import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -73,6 +74,12 @@ public class XImage extends XRect {
   catch (Exception e) {
    return null;
   }
+ }
+
+ @Override
+ public void paint(Graphics2D g) {
+  g.drawImage(getImage(), (int) getShape().getBounds().getMinX(), (int) getShape().getBounds().getMinY(),
+    (int) getShape().getBounds().getWidth(), (int) getShape().getBounds().getHeight(), null);
  }
 
 }
