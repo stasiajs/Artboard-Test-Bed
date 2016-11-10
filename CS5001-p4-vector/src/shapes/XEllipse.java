@@ -33,27 +33,4 @@ public class XEllipse extends XShape {
 
  }
 
-
- /* (non-Javadoc)
-  * @see shapes.XShape#resize(int, int, int)
-  */
- @Override
- public void resize(int x, int y, int corner) {
-  if (corner == Config.HIT_BOTTOM_RIGHT) {
-   draw(x1, y1, x, y);
-  }
-  else if (corner == Config.HIT_TOP_LEFT) {
-   draw(x, y, x2, y2);
-
-  }
-  else if (corner == Config.HIT_TOP_RIGHT) {
-   draw(x1, y, x, y2);
-  }
-  else if (corner == Config.HIT_BOTTOM_LEFT) {
-   draw(x, y1, x2, y);
-  }
-
-
- }
-
 }

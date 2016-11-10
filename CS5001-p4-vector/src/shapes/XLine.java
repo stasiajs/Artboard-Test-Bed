@@ -4,20 +4,21 @@ import java.awt.geom.Line2D;
 
 import gui.Config;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class XLine.
+ * The Class XLine defines the shape of a line. It has an underlying Line2D.Double as a shape. XLine inherits from XShape and overrides its methods draw() and isClicked().
  */
 public class XLine extends XShape {
 
  /**
-  * Instantiates a new x line.
+  * Instantiates a new XLine.
   */
  public XLine() {
   shape = new Line2D.Double();
  }
 
- /* (non-Javadoc)
+ /**
+  * Draws a new line with the two coordinates x1/y1 and x2/y2.
+  * 
   * @see shapes.XShape#draw(int, int, int, int)
   */
  @Override
@@ -33,92 +34,14 @@ public class XLine extends XShape {
 
  }
 
- /* (non-Javadoc)
-  * @see shapes.XShape#resize(int, int, int)
-  */
- @Override
- public void resize(int x, int y, int corner) {
-  //  if (x2 == getShape().getBounds().getMaxX() && y2 == getShape().getBounds().getMaxY()) {
-  if (corner == Config.HIT_BOTTOM_RIGHT) {
-   draw(x1, y1, x, y);
-  }
-  else if (corner == Config.HIT_TOP_LEFT) {
-   draw(x, y, x2, y2);
-
-  }
-  else if (corner == Config.HIT_TOP_RIGHT) {
-   draw(x1, y, x, y2);
-  }
-  else if (corner == Config.HIT_BOTTOM_LEFT) {
-   draw(x, y1, x2, y);
-  }
-  //  }
-  //  else {
-  //   if (corner == Config.HIT_BOTTOM_RIGHT) {
-  //    draw(x, y1, x2, y);
-  //   }
-  //   else if (corner == Config.HIT_TOP_LEFT) {
-  //    draw(x1, y, x, y2);
-  //
-  //   }
-  //   else if (corner == Config.HIT_TOP_RIGHT) {
-  //    draw(x, y, x2, y2);
-  //   }
-  //   else if (corner == Config.HIT_BOTTOM_LEFT) {
-  //    draw(x1, y1, x, y);
-  //   }
-  //  }
- }
-
- /* (non-Javadoc)
+ /**
+  * Checks if a line is clicked on. Uses the intersects() method of Shape, as the contain() method does not work for lines.
+  * 
   * @see shapes.XShape#isClicked(int, int)
   */
  @Override
  public boolean isClicked(int x, int y) {
-  if (shape.intersects(x - 1, y - 1, 3, 3)) {
-   return true;
-  }
-  else {
-   return false;
-  }
+  return shape.intersects(x - 1, y - 1, 3, 3);
  }
- 
-
- // @Override
- // public void updateBounds(){
- //
- //  if (x1<=x2){
- //   this.x1=(int) shape.getBounds().getMinX();
- //   System.out.println("minX: "+x1);
- //   this.x2=(int) shape.getBounds().getMaxX();
- //   System.out.println("maxX: "+x2);
- //
- //  }
- //
- //  else {
- //   this.x2=(int) shape.getBounds().getMinX();
- //   System.out.println("minX: "+x1);
- //   this.x1=(int) shape.getBounds().getMaxX();
- //   System.out.println("maxX: "+x2);
- //  }
- //
- //  if (y1<=y2){
- //   this.y1=(int) shape.getBounds().getMinY();
- //   System.out.println("minY: "+y1);
- //
- //   this.y2=(int) shape.getBounds().getMaxY();
- //   System.out.println("maxY: "+y2);
- //  }
- //
- //  else{
- //   this.y2=(int) shape.getBounds().getMinY();
- //   System.out.println("minY: "+y1);
- //
- //   this.y1=(int) shape.getBounds().getMaxY();
- //   System.out.println("maxY: "+y2);
- //  }
- //
- //
- // }
 
 }

@@ -2,27 +2,29 @@ package shapes;
 
 import gui.Config;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class XSquare.
+ * The Class XSquare defines a square with an identical side length. It inherits from 
  */
 public class XSquare extends XRect {
 
- /* (non-Javadoc)
+ /**
+  * Draw a square.
+  * 
   * @see shapes.XRect#draw(int, int, int, int)
   */
  @Override
  public void draw(int x1, int y1, int x2, int y2) {
 
-  int s = Math.min(Math.abs(x2 - x1), Math.abs(y2 - y1));
-  int x = x1 > x2 ? x1 - s : x1;
-  int y = y1 > y2 ? y1 - s : y1;
+  int shortSide = Math.min(Math.abs(x2 - x1), Math.abs(y2 - y1));
+  
+  int newX = x1 > x2 ? x1 - shortSide : x1;
+  int newY = y1 > y2 ? y1 - shortSide : y1;
 
-  super.draw(x, y, x + s, y + s);
+  super.draw(newX, newY, newX + shortSide, newY + shortSide);
  }
 
 
- /* (non-Javadoc)
+ /** 
   * @see shapes.XRect#resize(int, int, int)
   */
  @Override
