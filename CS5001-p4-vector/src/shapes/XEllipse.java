@@ -15,7 +15,7 @@ public class XEllipse extends XShape {
  }
 
  /**
-  * Draw an ellipse. The setFrameFromDiagonal() method is used as it is a sound solution when drawing by mouse.
+  * Construct an ellipse. The setFrameFromDiagonal() method is used as it is a sound solution when drawing by mouse.
   *
   * @see shapes.XShape#construct(int, int, int, int)
   */

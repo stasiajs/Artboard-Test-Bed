@@ -8,7 +8,7 @@ import gui.Config;
 public class XCircle extends XEllipse {
 
  /**
-  * Draw the circle. The x and y components of the radius are the shorter side of the drawn rectangle.
+  * Construct the circle. The x and y components of the radius are the shorter side of the drawn rectangle.
   *
   * @see shapes.XEllipse#construct(int, int, int, int)
   */

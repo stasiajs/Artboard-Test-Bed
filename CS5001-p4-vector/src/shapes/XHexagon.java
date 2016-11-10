@@ -19,7 +19,7 @@ public class XHexagon extends XShape {
  }
 
  /**
-  * Draws the Hexagon according to its definition.
+  * Construct the Hexagon according to its definition.
   *
   * @see shapes.XShape#construct(int, int, int, int)
   */
