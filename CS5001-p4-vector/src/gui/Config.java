@@ -45,7 +45,7 @@ public class Config {
  public static final int NOT_HIT = 4;
 
  /** The Constant BOX_SIZE determines the size of the resize boxes. */
- public static final int BOX_SIZE = 3;
+ public static final int BOX_SIZE = 5;
 
  /** The Constant PANEL_HEIGHT defines the height of the draw panel. */
  public static final int PANEL_HEIGHT = 600;
