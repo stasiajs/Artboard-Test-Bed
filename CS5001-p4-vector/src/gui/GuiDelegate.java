@@ -62,10 +62,10 @@ public class GuiDelegate implements Observer {
  private JColorChooser jColorChooser;
 
  /** The undo menu item. */
- JMenuItem undo;
+ private JMenuItem undo;
 
  /** The redo menu item. */
- JMenuItem redo;
+ private JMenuItem redo;
 
  /**
   * Instantiates a new gui delegate.
@@ -259,7 +259,7 @@ public class GuiDelegate implements Observer {
   */
  private void setupLeftBar() {
 
-  leftBar.setLayout(new GridLayout(20, 1));
+  leftBar.setLayout(new GridLayout(Config.MAX_LINES, 1));
 
   JLabel modeLabel = new JLabel("Mode: ");
   JButton drawButton = new JButton("Draw Mode");
@@ -456,7 +456,7 @@ public class GuiDelegate implements Observer {
    public void run() {
     drawPanel.setModel(model);
     drawPanel.repaint();
-    
+
     // check if redo is possible and enable/disable the button
     if (model.redoIsEmpty()) {
      redo.setEnabled(false);
@@ -464,7 +464,7 @@ public class GuiDelegate implements Observer {
     else {
      redo.setEnabled(true);
     }
-    
+
     //check if undo is possible and enable/disable the button
     if (model.undoIsEmpty()) {
      undo.setEnabled(false);

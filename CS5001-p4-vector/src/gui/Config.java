@@ -59,4 +59,7 @@ public class Config {
  /** The Constant INTERSECT_SIZE defines the size of the intersect rectangle for selecting a line shape. */
  public static final int INTERSECT_SIZE = 3;
 
+ /** The Constant MAX_LINES defines the lines of the GRIDVIEW. */
+ public static final int MAX_LINES = 20;
+
 }
