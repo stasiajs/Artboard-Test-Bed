@@ -256,4 +256,22 @@ public class Model extends Observable {
   redoStack.clear();
  }
 
+ /**
+  * Undo is empty.
+  *
+  * @return true, if undo stack is empty
+  */
+ public boolean undoIsEmpty() {
+  return (undoStack.size() < 1);
+ }
+
+ /**
+  * Redo is empty.
+  *
+  * @return true, if redo stack is empty
+  */
+ public boolean redoIsEmpty() {
+  return (redoStack.size() < 1);
+ }
+
 }

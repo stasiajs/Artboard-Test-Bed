@@ -61,6 +61,12 @@ public class GuiDelegate implements Observer {
  /** The color chooser. */
  private JColorChooser jColorChooser;
 
+ /** The undo menu item. */
+ JMenuItem undo;
+
+ /** The redo menu item. */
+ JMenuItem redo;
+
  /**
   * Instantiates a new gui delegate.
   *
@@ -113,8 +119,8 @@ public class GuiDelegate implements Observer {
   JMenuItem export = new JMenuItem("Export to PNG");
 
   JMenuItem importImage = new JMenuItem("Import Image");
-  JMenuItem undo = new JMenuItem("Undo step");
-  JMenuItem redo = new JMenuItem("Redo step");
+  undo = new JMenuItem("Undo step");
+  redo = new JMenuItem("Redo step");
 
   file.add(newProject);
   file.add(load);
@@ -126,6 +132,9 @@ public class GuiDelegate implements Observer {
   edit.add(redo);
   jMenuBar.add(file);
   jMenuBar.add(edit);
+
+  undo.setEnabled(false);
+  redo.setEnabled(false);
 
   newProject.addActionListener(new ActionListener() {
    @Override
@@ -447,6 +456,22 @@ public class GuiDelegate implements Observer {
    public void run() {
     drawPanel.setModel(model);
     drawPanel.repaint();
+    
+    // check if redo is possible and enable/disable the button
+    if (model.redoIsEmpty()) {
+     redo.setEnabled(false);
+    }
+    else {
+     redo.setEnabled(true);
+    }
+    
+    //check if undo is possible and enable/disable the button
+    if (model.undoIsEmpty()) {
+     undo.setEnabled(false);
+    }
+    else {
+     undo.setEnabled(true);
+    }
    }
   });
  }
