@@ -157,14 +157,15 @@ public class GuiDelegate implements Observer {
      try {
       File file = fc.getSelectedFile();
       model.readFromFile(file.toString());
+      model.clearUndoRedo();
+      model.notifyObservers();
+      drawPanel.setSelectedXShape(null);
+      drawPanel.repaint();
      }
      catch (Exception e1) {
       JOptionPane.showMessageDialog(new JFrame(), "Could not load file!", "Error", JOptionPane.ERROR_MESSAGE);
      }
     }
-
-    model.notifyObservers();
-    drawPanel.repaint();
 
    }
   });

@@ -254,6 +254,8 @@ public class Model extends Observable {
  public void clearUndoRedo() {
   undoStack.clear();
   redoStack.clear();
+  setChanged();
+  notifyObservers();
  }
 
  /**
