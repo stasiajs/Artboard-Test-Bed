@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics2D;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -15,7 +16,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.imageio.ImageIO;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -119,6 +119,7 @@ public class GuiDelegate implements Observer {
   file.add(newProject);
   file.add(load);
   file.add(save);
+  file.addSeparator();
   file.add(importImage);
   file.add(export);
   edit.add(undo);
@@ -249,7 +250,7 @@ public class GuiDelegate implements Observer {
   */
  private void setupLeftBar() {
 
-  leftBar.setLayout(new BoxLayout(leftBar, BoxLayout.Y_AXIS));
+  leftBar.setLayout(new GridLayout(20, 1));
 
   JLabel modeLabel = new JLabel("Mode: ");
   JButton drawButton = new JButton("Draw Mode");
