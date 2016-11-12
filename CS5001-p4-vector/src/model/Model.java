@@ -199,6 +199,7 @@ public class Model extends Observable {
   * @throws IOException Signals that an I/O exception has occurred.
   * @throws ClassNotFoundException the class not found exception
   */
+ @SuppressWarnings("unchecked")
  private ArrayList<XShape> deserialize(byte[] serializedShapeList) throws IOException, ClassNotFoundException {
   ByteArrayInputStream in = new ByteArrayInputStream(serializedShapeList);
   ObjectInputStream is = new ObjectInputStream(in);
@@ -237,6 +238,7 @@ public class Model extends Observable {
   * @throws IOException Signals that an I/O exception has occurred.
   * @throws ClassNotFoundException the class not found exception
   */
+ @SuppressWarnings("unchecked")
  public void readFromFile(String filename) throws IOException, ClassNotFoundException {
   FileInputStream fis = new FileInputStream(filename);
   ObjectInputStream ois = new ObjectInputStream(fis);
