@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +17,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -26,8 +29,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import model.Model;
 import shapes.XImage;
@@ -81,9 +87,10 @@ public class GuiDelegate implements Observer {
   drawPanel = new DrawPanel(model);
   jColorChooser = new JColorChooser();
   downBar = new JToolBar();
-
+  
   setupComponents();
   model.addObserver(this);
+  
  }
 
  /**
@@ -260,11 +267,25 @@ public class GuiDelegate implements Observer {
   */
  private void setupLeftBar() {
 
+  // Make all buttons able to be selected by pressing Enter
+  setupEnterAction("Button");
+  setupEnterAction("RadioButton");
+  setupEnterAction("CheckBox");
+  
   leftBar.setLayout(new GridLayout(Config.MAX_LINES, 1));
 
+  // User should be able to enter select mode by pressing Alt+S
+  // and enter draw mode by pressing Alt+D
+  // This could be just one toggle button but this seemed easiest
   JLabel modeLabel = new JLabel("Mode: ");
-  JButton drawButton = new JButton("Draw Mode");
-  JButton selectButton = new JButton("Select Mode");
+  JRadioButton selectButton = new JRadioButton("Select Mode");
+  selectButton.setMnemonic(KeyEvent.VK_S);
+  JRadioButton drawButton = new JRadioButton("Draw Mode");
+  drawButton.setMnemonic(KeyEvent.VK_D);
+
+  ButtonGroup modeButtonGroup = new ButtonGroup();
+  modeButtonGroup.add(selectButton);
+  modeButtonGroup.add(drawButton);
 
   JLabel label = new JLabel("Shapes: ");
   JButton lineButton = new JButton("Line");
@@ -274,12 +295,24 @@ public class GuiDelegate implements Observer {
   JButton ellipseButton = new JButton("Ellipse");
   JButton hexButton = new JButton("Hexagon");
   JButton deleteButton = new JButton("Delete Shape");
-  JLabel actionLabel = new JLabel("Actions: ");
+  JLabel actionLabel = new JLabel("Actions (Select a shape in order to delete it): ");
   JButton deleteAll = new JButton("Delete All");
   JCheckBox fillBox = new JCheckBox("Enable/Disable fill");
 
-  drawButton.setEnabled(false);
+  //drawButton.setEnabled(false);
+  selectButton.setSelected(true);
+  drawPanel.setMode(Config.SELECT_MODE);
 
+  selectButton.addActionListener(new ActionListener() {
+
+	   @Override
+	   public void actionPerformed(ActionEvent e) {
+	    drawPanel.setMode(Config.SELECT_MODE);
+	    //selectButton.setEnabled(false);
+	    //drawButton.setEnabled(true);
+	   }
+	  });
+  
   drawButton.addActionListener(new ActionListener() {
 
    @Override
@@ -287,18 +320,8 @@ public class GuiDelegate implements Observer {
     drawPanel.setMode(Config.DRAW_MODE);
     drawPanel.setSelectedXShape(null);
     drawPanel.repaint();
-    drawButton.setEnabled(false);
-    selectButton.setEnabled(true);
-   }
-  });
-
-  selectButton.addActionListener(new ActionListener() {
-
-   @Override
-   public void actionPerformed(ActionEvent e) {
-    drawPanel.setMode(Config.SELECT_MODE);
-    selectButton.setEnabled(false);
-    drawButton.setEnabled(true);
+    //drawButton.setEnabled(false);
+    //selectButton.setEnabled(true);
    }
   });
 
@@ -351,6 +374,7 @@ public class GuiDelegate implements Observer {
   });
 
   deleteButton.addActionListener(new ActionListener() {
+	  
 
    @Override
    public void actionPerformed(ActionEvent e) {
@@ -384,10 +408,10 @@ public class GuiDelegate implements Observer {
     drawPanel.repaint();
    }
   });
-
+  
   leftBar.add(modeLabel);
-  leftBar.add(drawButton);
   leftBar.add(selectButton);
+  leftBar.add(drawButton);
   leftBar.addSeparator();
   leftBar.add(fillBox);
   leftBar.addSeparator();
@@ -476,5 +500,13 @@ public class GuiDelegate implements Observer {
    }
   });
  }
-
+ 
+private void setupEnterAction(String componentName){
+	    String keyName = componentName + ".focusInputMap";
+	    InputMap im = (InputMap) UIManager.getDefaults().get(keyName);
+	    Object pressedAction = im.get(KeyStroke.getKeyStroke("pressed SPACE"));
+	    Object releasedAction = im.get(KeyStroke.getKeyStroke("released SPACE"));
+	    im.put(KeyStroke.getKeyStroke("pressed ENTER"), pressedAction);
+	    im.put(KeyStroke.getKeyStroke("released ENTER"), releasedAction);
+	}
 }
