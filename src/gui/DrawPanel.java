@@ -38,6 +38,9 @@ public class DrawPanel extends JPanel {
 
  /** Temporary reference to the XShape that is selected. */
  private XShape selectedXShape;
+ 
+ /** Temporary reference to the XShape that is being moused over */
+ private XShape detectedXShape;
 
  /** The current drawing color. */
  private Color color;
@@ -237,6 +240,26 @@ public class DrawPanel extends JPanel {
 
    @Override
    public void mouseMoved(MouseEvent e) {
+	    // go through the list of shapes and get a shape if one was hit
+	    detectedXShape = model.getXShapeAtPos(e.getX(), e.getY());
+
+	     // determine what type of shape it is and print it out
+	     if ((detectedXShape != null) && !detectedXShape.equals(null)) {
+	    	 //System.out.println("Shape detected: " + detectedXShape.getClass().getName());
+	    	 if (detectedXShape instanceof XLine) {
+	    		 System.out.println("Shape detected: Line");
+	    	 } else if (detectedXShape instanceof XSquare) {
+	    		 System.out.println("Shape detected: Square");
+	    	 } else if (detectedXShape instanceof XRect) {
+	    		 System.out.println("Shape detected: Rectangle");
+	    	 } else if (detectedXShape instanceof XCircle) {
+	    		 System.out.println("Shape detected: Circle");
+	    	 } else if (detectedXShape instanceof XEllipse) {
+	    		 System.out.println("Shape detected: Ellipse");
+	    	 } else if (detectedXShape instanceof XHexagon) {
+	    		 System.out.println("Shape detected: Hexagon");
+	    	 }
+	     }
    }
   });
 
