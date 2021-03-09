@@ -3,6 +3,8 @@ package gui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -18,7 +20,6 @@ import shapes.XLine;
 import shapes.XRect;
 import shapes.XShape;
 import shapes.XSquare;
-
 /**
  * The Class DrawPanel draws all the shapes of the shape list on a JPanel. It is also responsible for displaying changes regarding resizing and moving.
  */
@@ -83,7 +84,7 @@ public class DrawPanel extends JPanel {
   setBackground(Color.WHITE);
   setVisible(true);
   color = Color.BLACK;
-
+  
   addMouseListener(new MouseListener() {
 
    @Override
@@ -243,6 +244,7 @@ public class DrawPanel extends JPanel {
 	    // go through the list of shapes and get a shape if one was hit
 	    detectedXShape = model.getXShapeAtPos(e.getX(), e.getY());
 
+	    //System.out.println(e.getX() + " " + e.getY());
 	     // determine what type of shape it is and print it out
 	     if ((detectedXShape != null) && !detectedXShape.equals(null)) {
 	    	 //System.out.println("Shape detected: " + detectedXShape.getClass().getName());
@@ -260,6 +262,7 @@ public class DrawPanel extends JPanel {
 	    		 System.out.println("Shape detected: Hexagon");
 	    	 }
 	     }
+	     
    }
   });
 
@@ -340,6 +343,7 @@ public class DrawPanel extends JPanel {
  public void setMode(int mode) {
   this.mode = mode;
  }
+ 
 
  /**
   * Gets the selected XShape.
@@ -357,6 +361,68 @@ public class DrawPanel extends JPanel {
   */
  public void setSelectedXShape(XShape selectedXShape) {
   this.selectedXShape = selectedXShape;
+ }
+ 
+ /**
+  * Draws a "default" version of the selected XShape.
+  * 
+  * @param the selected XShape
+  */
+ public void drawDefaultSelectedShape() {
+	 if (mode == Config.DRAW_MODE) {
+	     switch (shapeMode) {
+	     case Config.DRAW_LINE:
+	         drawXShape = new XLine();
+	         drawXShape.setColor(color);
+	         drawXShape.setFill(setFill);
+	         drawXShape.construct(176, 206, 368, 329);
+		      model.addShape(drawXShape);
+	         break;
+	         
+	       case Config.DRAW_RECT:
+	         drawXShape = new XRect();
+	         drawXShape.setColor(color);
+	         drawXShape.setFill(setFill);
+	         drawXShape.construct(176, 206, 368, 329);
+		      model.addShape(drawXShape);
+	         break;
+	         
+	      case Config.DRAW_SQUARE:
+	       drawXShape = new XSquare();
+	       drawXShape.setColor(color);
+	       drawXShape.setFill(setFill);
+	       drawXShape.construct(176, 206, 368, 329);
+	       model.addShape(drawXShape);
+	       break;
+	       
+	      case Config.DRAW_CIRCLE:
+	          drawXShape = new XCircle();
+	          drawXShape.setColor(color);
+	          drawXShape.setFill(setFill);
+	          drawXShape.construct(176, 206, 368, 329);
+		      model.addShape(drawXShape);
+	          break;
+
+	      case Config.DRAW_ELLIPSE:
+	          drawXShape = new XEllipse();
+	          drawXShape.setColor(color);
+	          drawXShape.setFill(setFill);
+	          drawXShape.construct(176, 206, 368, 329);
+		      model.addShape(drawXShape);
+	          break;
+
+	      case Config.DRAW_HEX:
+	          drawXShape = new XHexagon();
+	          drawXShape.setColor(color);
+	          drawXShape.setFill(setFill);
+	          drawXShape.construct(176, 206, 368, 329);
+		      model.addShape(drawXShape);
+	          break;
+
+	         default:
+	          break;
+	     }
+	 }
  }
 
  /**
