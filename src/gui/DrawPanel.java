@@ -9,8 +9,19 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyVetoException;
+import java.util.Locale;
 
+import javax.speech.AudioException;
+import javax.speech.Central;
+import javax.speech.EngineException;
+import javax.speech.EngineStateError;
+import javax.speech.synthesis.Synthesizer;
+import javax.speech.synthesis.SynthesizerModeDesc;
 import javax.swing.JPanel;
+
+import javax.speech.synthesis.Voice;
+//import com.sun.speech.freetts.Voice;
 
 import model.Model;
 import shapes.XCircle;
@@ -69,6 +80,9 @@ public class DrawPanel extends JPanel {
 
  /** The resize boxes that appear when selecting a shape. */
  private Rectangle2D.Double[] resizeBoxes;
+ 
+ /** TTS synthesizer */
+ private Synthesizer synthesizer;
 
  /**
   * Instantiates a new draw panel.
@@ -85,6 +99,49 @@ public class DrawPanel extends JPanel {
   setVisible(true);
   color = Color.BLACK;
   
+  // TTS stuff
+	//Set property as Kevin Dictionary 
+	  System.setProperty( 
+	      "freetts.voices", 
+	      "com.sun.speech.freetts.en.us"
+	          + ".cmu_us_kal.KevinVoiceDirectory"); 
+	
+	  // Register Engine 
+	  try {
+		Central.registerEngineCentral( 
+		      "com.sun.speech.freetts"
+		      + ".jsapi.FreeTTSEngineCentral");
+	  // Create a Synthesizer 
+	  synthesizer = Central.createSynthesizer( 
+	          new SynthesizerModeDesc(Locale.US)); 
+	  
+	  // Allocate synthesizer 
+	     synthesizer.allocate(); 
+	     
+	     Voice kevin = new Voice("kevin16", 
+			        Voice.GENDER_DONT_CARE, Voice.AGE_DONT_CARE, null);
+		  
+		  synthesizer.getSynthesizerProperties().setVoice(kevin);
+
+	     // Resume Synthesizer 
+	     synthesizer.resume(); 
+	  
+	  } catch (EngineException e1) {
+			
+			e1.printStackTrace();
+		
+	} catch (AudioException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	} catch (EngineStateError e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	} catch (PropertyVetoException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	} 
+		
+  
   addMouseListener(new MouseListener() {
 
    @Override
@@ -99,6 +156,7 @@ public class DrawPanel extends JPanel {
      // show the resize boxes of the selected shape
      if ((selectedXShape != null) && !selectedXShape.equals(null)) {
       resizeBoxes = getSelections(selectedXShape);
+      getTTSDescription();
      }
     }
    }
@@ -520,5 +578,42 @@ public class DrawPanel extends JPanel {
  public void setModel(Model model) {
   this.model = model;
  }
+ 
+ /**
+  * TTS shit
+  */
+ public void getTTSDescription() {
+	 try { 
+	    
+	     String description = "";
+	     
+	     if (selectedXShape instanceof XLine) {
+    		 description = "Line";
+    	 } else if (selectedXShape instanceof XSquare) {
+    		 description = "Square";
+    	 } else if (selectedXShape instanceof XRect) {
+    		 description = "Rectangle";
+    	 } else if (selectedXShape instanceof XCircle) {
+    		 description = "Circle";
+    	 } else if (selectedXShape instanceof XEllipse) {
+    		 description = "Ellipse";
+    	 } else if (selectedXShape instanceof XHexagon) {
+    		 description = "Hexagon";
+    	 }
+
+	     // Speaks the given text 
+	     // until the queue is empty. 
+	     synthesizer.speakPlainText( 
+	         description, null); 
+	     synthesizer.waitEngineState( 
+	         Synthesizer.QUEUE_EMPTY); 
+	 } 
+
+	 catch (Exception exception) { 
+		   exception.printStackTrace(); 
+	 } 
+ }
+
+
 
 }

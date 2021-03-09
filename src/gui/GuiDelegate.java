@@ -46,7 +46,9 @@ import model.Model;
 import shapes.XImage;
 
 /**
- * The Class GuiDelegate describes the GUI elements of the application. It has a menu bar for file and edit operations, a sidebar for drawing operation, a bottom bar for selecting color and fill for shapes, and a JPanel for drawing.
+ * The Class GuiDelegate describes the GUI elements of the application. 
+ * It has a menu bar for file and edit operations, a sidebar for drawing operation, 
+ * a bottom bar for selecting color and fill for shapes, and a JPanel for drawing.
  */
 public class GuiDelegate implements Observer {
 
