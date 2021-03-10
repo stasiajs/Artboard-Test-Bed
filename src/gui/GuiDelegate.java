@@ -399,8 +399,11 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-    drawPanel.setDrawMode(Config.DRAW_LINE);
+    drawPanel.setMode(Config.DRAW_MODE);
+	drawPanel.setDrawMode(Config.DRAW_LINE);
     drawPanel.drawDefaultSelectedShape();
+    
+    drawPanel.setMode(Config.SELECT_MODE);
    }
   });
   
@@ -408,8 +411,11 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-    drawPanel.setDrawMode(Config.DRAW_SQUARE);
+	drawPanel.setMode(Config.DRAW_MODE);
+	drawPanel.setDrawMode(Config.DRAW_SQUARE);
     drawPanel.drawDefaultSelectedShape();
+    
+    drawPanel.setMode(Config.SELECT_MODE);
    }
   });
 
@@ -417,8 +423,11 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
+	drawPanel.setMode(Config.DRAW_MODE);
     drawPanel.setDrawMode(Config.DRAW_RECT);
     drawPanel.drawDefaultSelectedShape();
+    
+    drawPanel.setMode(Config.SELECT_MODE);
    }
   });
 
@@ -426,8 +435,11 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-    drawPanel.setDrawMode(Config.DRAW_CIRCLE);
+	drawPanel.setMode(Config.DRAW_MODE);
+	drawPanel.setDrawMode(Config.DRAW_CIRCLE);
     drawPanel.drawDefaultSelectedShape();
+    
+    drawPanel.setMode(Config.SELECT_MODE);
    }
   });
 
@@ -435,8 +447,11 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-    drawPanel.setDrawMode(Config.DRAW_ELLIPSE);
+	drawPanel.setMode(Config.DRAW_MODE);
+	drawPanel.setDrawMode(Config.DRAW_ELLIPSE);
     drawPanel.drawDefaultSelectedShape();
+    
+    drawPanel.setMode(Config.SELECT_MODE);
    }
   });
 
@@ -444,8 +459,11 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-    drawPanel.setDrawMode(Config.DRAW_HEX);
+	drawPanel.setMode(Config.DRAW_MODE);
+	drawPanel.setDrawMode(Config.DRAW_HEX);
     drawPanel.drawDefaultSelectedShape();
+    
+    drawPanel.setMode(Config.SELECT_MODE);
    }
   });
   
@@ -457,7 +475,6 @@ public class GuiDelegate implements Observer {
 			drawPanel.setSelectedXShape(null);
 			drawPanel.repaint();
 		}
-		   
 	  }
 });
   
@@ -523,10 +540,10 @@ public class GuiDelegate implements Observer {
   JButton colorButton = new JButton();
   JButton fillButton = new JButton("Fill/unfill selected shape");
   
-  JCheckBox modeBox = new JCheckBox("Enable drawing or use Alt+D to toggle");
+  //JCheckBox modeBox = new JCheckBox("Enable drawing or use Alt+D to toggle");
   // use Alt+D to enable/disable draw mode
-  modeBox.setMnemonic(KeyEvent.VK_D);
-  modeBox.setFocusable(false);
+  //modeBox.setMnemonic(KeyEvent.VK_D);
+  //modeBox.setFocusable(false);
 
   colorButton.setBackground(Color.BLACK);
   colorButton.addActionListener(new ActionListener() {
@@ -552,7 +569,7 @@ public class GuiDelegate implements Observer {
    }
   });
 
-  
+  /*
   modeBox.addItemListener(new ItemListener() {
 
 	   @Override
@@ -567,12 +584,12 @@ public class GuiDelegate implements Observer {
 	    }
 	   }
 	  });
-  
+  */
   downBar.add(label);
   downBar.add(colorButton);
   downBar.addSeparator();
   downBar.add(fillButton);
-  downBar.add(modeBox);
+  //downBar.add(modeBox);
 
  }
 

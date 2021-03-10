@@ -150,14 +150,14 @@ public class DrawPanel extends JPanel {
     // reset selection at mouse click
     selectedXShape = null;
     // when mouse is clicked in select mode, go through the list of shapes and get a shape if one was hit
-    if (mode == Config.SELECT_MODE) {
+    //if (mode == Config.SELECT_MODE) {
      selectedXShape = model.getXShapeAtPos(e.getX(), e.getY());
 
      // show the resize boxes of the selected shape
      if ((selectedXShape != null) && !selectedXShape.equals(null)) {
       resizeBoxes = getSelections(selectedXShape);
       getTTSDescription();
-     }
+     //}
     }
    }
 
@@ -178,13 +178,14 @@ public class DrawPanel extends JPanel {
      }
     }
 
+    /*
     // if in draw mode and a new shape was drawn, add it to the list
     else if (mode == Config.DRAW_MODE) {
      if ((drawXShape != null) && !drawXShape.equals(null)) {
       model.addShape(drawXShape);
      }
      drawXShape = null;
-    }
+    } */
 
     repaint();
 
@@ -600,11 +601,13 @@ public class DrawPanel extends JPanel {
     	 } else if (selectedXShape instanceof XHexagon) {
     		 description = "Hexagon";
     	 }
+	     
+	     System.out.println(selectedXShape.getCoordinates());
 
 	     // Speaks the given text 
 	     // until the queue is empty. 
 	     synthesizer.speakPlainText( 
-	         description, null); 
+	         description + " " + selectedXShape.getTTSCoordinates(), null); 
 	     synthesizer.waitEngineState( 
 	         Synthesizer.QUEUE_EMPTY); 
 	 } 

@@ -119,6 +119,18 @@ public abstract class XShape implements Serializable {
   width = x2 - x1;
   height = y2 - y1;
  }
+ 
+ /**
+  * Get the coordinates
+  */
+ public String getCoordinates() {
+	 return "x1: " + this.x1 + " y1: " + this.y1 + "\nx2: " + this.x2 + " y2: " + y2;
+ }
+ 
+ public String getTTSCoordinates() {
+	 return "is " + this.x1 + " points from the right edge, " + this.x2 + " points from the left edge, " +
+			 this.y1 + " points from the top edge, and " + this.y2 + " points from the bottom edge.";
+ }
 
  /**
   * Paint the shape.
