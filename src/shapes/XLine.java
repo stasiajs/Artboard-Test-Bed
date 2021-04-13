@@ -46,6 +46,9 @@ public class XLine extends XShape {
   */
  @Override
  public void paint(Graphics2D g) {
+	 if (getBorderWidth() != null) {
+		  g.setStroke(getBorderWidth());
+	  }
   if ((getColor() != null) && !getColor().equals(null)) {
    g.setColor(getColor());
   }

@@ -28,6 +28,9 @@ public class Config {
 
  /** The Constant DRAW_HEX indicates that hexagons can be currently drawn. */
  public static final int DRAW_HEX = 6;
+ 
+ /** The Constant DRAW_TRIANGLE indicates that triangles can be currently drawn. */
+ public static final int DRAW_TRIANGLE = 7;
 
  /** The Constant HIT_TOP_LEFT is the number of the top left resize box. */
  public static final int HIT_TOP_LEFT = 0;

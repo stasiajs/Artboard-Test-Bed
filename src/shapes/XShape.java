@@ -1,8 +1,10 @@
 package shapes;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.Stroke;
 import java.io.Serializable;
 
 import gui.Config;
@@ -22,6 +24,9 @@ public abstract class XShape implements Serializable {
 
  /** Determines whether the shape is filled or not. Default is false. */
  private boolean fill = false;
+ 
+ /** The thickness of the shape's border. */
+ private BasicStroke borderWidth;
 
  /** The x1 coordinate of the shape's frame. */
  protected int x1 = 0;
@@ -131,6 +136,25 @@ public abstract class XShape implements Serializable {
 	 return "is " + this.x1 + " points from the right edge, " + this.x2 + " points from the left edge, " +
 			 this.y1 + " points from the top edge, and " + this.y2 + " points from the bottom edge.";
  }
+ 
+ /**
+  * why not
+  */
+ public int getX1() {
+	 return this.x1;
+ }
+ 
+ public int getY1() {
+	 return this.y1;
+ }
+ 
+ public int getX2() {
+	 return this.x2;
+ }
+ 
+ public int getY2() {
+	 return this.y2;
+ }
 
  /**
   * Paint the shape.
@@ -138,12 +162,17 @@ public abstract class XShape implements Serializable {
   * @param g the graphics
   */
  public void paint(Graphics2D g) {
+  if (borderWidth != null) {
+	  g.setStroke(borderWidth);
+  }
+  
   if ((color != null) && !color.equals(null)) {
    g.setColor(color);
   }
   if (fill) {
    g.fill(shape);
   }
+  
   g.draw(shape);
  }
 
@@ -199,5 +228,18 @@ public abstract class XShape implements Serializable {
   */
  public void setFill(boolean fill) {
   this.fill = fill;
+ }
+ 
+ /**
+  * Sets the border width
+  * 
+  * @param the new border width
+  */
+ public void setBorderWidth(int border) {
+	 borderWidth = new BasicStroke(border);
+ }
+ 
+ public BasicStroke getBorderWidth() {
+	 return borderWidth;
  }
 }

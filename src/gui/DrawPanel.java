@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -31,6 +32,7 @@ import shapes.XLine;
 import shapes.XRect;
 import shapes.XShape;
 import shapes.XSquare;
+import shapes.XTriangle;
 /**
  * The Class DrawPanel draws all the shapes of the shape list on a JPanel. It is also responsible for displaying changes regarding resizing and moving.
  */
@@ -156,7 +158,6 @@ public class DrawPanel extends JPanel {
      // show the resize boxes of the selected shape
      if ((selectedXShape != null) && !selectedXShape.equals(null)) {
       resizeBoxes = getSelections(selectedXShape);
-      getTTSDescription();
      //}
     }
    }
@@ -175,6 +176,7 @@ public class DrawPanel extends JPanel {
      if ((selectedXShape != null) && !selectedXShape.equals(null)) {
       selectedXShape.updateBounds();
       resizeBoxes = getSelections(selectedXShape);
+     // getTTSDescription();
      }
     }
 
@@ -221,6 +223,13 @@ public class DrawPanel extends JPanel {
        drawXShape.setFill(setFill);
        drawXShape.construct(pressX, pressY, e.getX(), e.getY());
        break;
+       
+      case Config.DRAW_TRIANGLE:
+    	drawXShape = new XTriangle();
+    	drawXShape.setColor(color);
+        drawXShape.setFill(setFill);
+        drawXShape.construct(pressX, pressY, e.getX(), e.getY());
+        break;
 
       case Config.DRAW_RECT:
        drawXShape = new XRect();
@@ -301,11 +310,12 @@ public class DrawPanel extends JPanel {
    @Override
    public void mouseMoved(MouseEvent e) {
 	    // go through the list of shapes and get a shape if one was hit
-	    detectedXShape = model.getXShapeAtPos(e.getX(), e.getY());
+	    //detectedXShape = model.getXShapeAtPos(e.getX(), e.getY());
 
 	    //System.out.println(e.getX() + " " + e.getY());
-	     // determine what type of shape it is and print it out
-	     if ((detectedXShape != null) && !detectedXShape.equals(null)) {
+	     // determine what type of shape it is and print it out'
+	   /*
+	    if ((detectedXShape != null) && !detectedXShape.equals(null)) {
 	    	 //System.out.println("Shape detected: " + detectedXShape.getClass().getName());
 	    	 if (detectedXShape instanceof XLine) {
 	    		 System.out.println("Shape detected: Line");
@@ -319,9 +329,12 @@ public class DrawPanel extends JPanel {
 	    		 System.out.println("Shape detected: Ellipse");
 	    	 } else if (detectedXShape instanceof XHexagon) {
 	    		 System.out.println("Shape detected: Hexagon");
+	    	 } else if (detectedXShape instanceof XTriangle) {
+	    		 System.out.println("Shape detected: Triangle");
 	    	 }
 	     }
-	     
+	     */
+	    
    }
   });
 
@@ -343,24 +356,29 @@ public class DrawPanel extends JPanel {
   for (int i = 0; i < model.getShapeList().size(); i++) {
    XShape xshape = model.getShapeList().get(i);
    xshape.paint(g);
+   
   }
 
   // paint the shape that is currently being drawn
   if ((drawXShape != null) && !drawXShape.equals(null)) {
+	  
    g.setColor(color);
    if (drawXShape.isFill()) {
     g.fill(drawXShape.getShape());
    }
    g.draw(drawXShape.getShape());
   }
+  g.drawString("Hello world", 70, 20);
 
   // add the selection marks if applicable
   if (!export && (resizeBoxes != null) && !resizeBoxes.equals(null) && (selectedXShape != null)
     && !selectedXShape.equals(null)) {
+	  
    for (int i = 0; i < resizeBoxes.length; i++) {
     if ((resizeBoxes[i] != null) && !resizeBoxes[i].equals(null)) {
-     g.setColor(Color.BLACK);
-     g.draw(resizeBoxes[i]);
+    	g.setStroke(new BasicStroke(1));
+    	g.setColor(Color.BLACK);
+    	g.draw(resizeBoxes[i]);
 
     }
    }
@@ -433,6 +451,14 @@ public class DrawPanel extends JPanel {
 	     case Config.DRAW_LINE:
 	         drawXShape = new XLine();
 	         drawXShape.setColor(color);
+	         drawXShape.setFill(setFill);
+	         drawXShape.construct(176, 206, 368, 329);
+		      model.addShape(drawXShape);
+	         break;
+	         
+	     case Config.DRAW_TRIANGLE:
+	    	 drawXShape = new XTriangle();
+	    	 drawXShape.setColor(color);
 	         drawXShape.setFill(setFill);
 	         drawXShape.construct(176, 206, 368, 329);
 		      model.addShape(drawXShape);
@@ -578,6 +604,27 @@ public class DrawPanel extends JPanel {
   */
  public void setModel(Model model) {
   this.model = model;
+ }
+ 
+ /**
+  * Gets the model.
+  */
+ public Model getModel() {
+	 return this.model;
+ }
+ 
+ /**
+  * Sets drag mode
+  */
+ public void setDrag(boolean isDrag) {
+	 this.drag = isDrag;
+ }
+ 
+ public void moveXShape(int newX, int newY) {
+	 if (drag) {
+	    selectedXShape.dragTo(newX, newY);
+	    resizeBoxes = getSelections(selectedXShape);
+	 }
  }
  
  /**

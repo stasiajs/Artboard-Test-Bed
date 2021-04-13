@@ -11,6 +11,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +29,7 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -43,7 +46,14 @@ import javax.swing.event.MenuKeyEvent;
 import javax.swing.event.MenuKeyListener;
 
 import model.Model;
+import shapes.XCircle;
+import shapes.XEllipse;
 import shapes.XImage;
+import shapes.XLine;
+import shapes.XRect;
+import shapes.XShape;
+import shapes.XSquare;
+import shapes.XTriangle;
 
 /**
  * The Class GuiDelegate describes the GUI elements of the application. 
@@ -81,9 +91,17 @@ public class GuiDelegate implements Observer {
 
  /** The redo menu item. */
  private JMenuItem redo;
+ 
+ private JButton deleteButton;
+ 
+ private JButton fillButton;
 
  /** Booleans for custom settings */
  private boolean defaultSettingsOn = true;
+ 
+ private XShape loadedShape;
+ 
+ private boolean drawDefaultOnClick = false;
  
  /**
   * Instantiates a new gui delegate.
@@ -102,7 +120,7 @@ public class GuiDelegate implements Observer {
   
   setupComponents();
   model.addObserver(this);
-  
+  drawPanel.setFocusable(true);
  }
 
  /**
@@ -117,22 +135,20 @@ public class GuiDelegate implements Observer {
   borderPane.setLayout(new BorderLayout());
 
   borderPane.add(drawPanel, BorderLayout.CENTER);
-  //borderPane.add(leftBar, BorderLayout.WEST);
   borderPane.add(leftBar, BorderLayout.PAGE_START);
   borderPane.add(downBar, BorderLayout.SOUTH);
   
-  //drawPanel.setFocusable(true);
-  //jFrame.setFocusable(true);
 
   jFrame.setSize(Config.PANEL_WIDTH, Config.PANEL_HEIGHT);
   jFrame.setVisible(true);
   jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+  /*
   drawPanel.addKeyListener(new KeyListener() {
 	  
 	   @Override
 	   public void keyReleased(KeyEvent ke) {
-		   if(ke.getExtendedKeyCode() == KeyEvent.VK_BACK_SPACE)
+		   /*if(ke.getExtendedKeyCode() == KeyEvent.VK_BACK_SPACE)
 		    {  
 				System.out.println("Backspace pressed");
 
@@ -142,19 +158,40 @@ public class GuiDelegate implements Observer {
 				     drawPanel.repaint();
 				    }
 		    }
+		   
 	   }
 
 
 		@Override
 		public void keyPressed(KeyEvent ke) {
-			
+			int keyCode = ke.getExtendedKeyCode();
+			switch (keyCode) {
+			case KeyEvent.VK_UP:
+	            // handle up 
+				System.out.println("Up arrow key pressed");
+	            break;
+	        case KeyEvent.VK_DOWN:
+	            // handle down 
+	        	System.out.println("Down arrow key pressed");
+	            break;
+	        case KeyEvent.VK_LEFT:
+	            // handle left
+	        	System.out.println("Left arrow key pressed");
+	            break;
+	        case KeyEvent.VK_RIGHT :
+	            // handle right
+	        	System.out.println("Right arrow key pressed");
+	            break;
+	        default:
+	        	break;
+			}
 		}
 
 		@Override
 		public void keyTyped(KeyEvent ke) {
 			
 		}
-});
+}); */
  }
 
  /**
@@ -372,13 +409,13 @@ public class GuiDelegate implements Observer {
 
   JLabel label = new JLabel("Shapes: ");
   JButton lineButton = new JButton("Line");
+  JButton triangleButton = new JButton("Triangle");
   JButton squareButton = new JButton("Square");
   JButton rectButton = new JButton("Rectangle");
   JButton circleButton = new JButton("Circle");
   JButton ellipseButton = new JButton("Ellipse");
-  JButton hexButton = new JButton("Hexagon");
-  JButton deleteButton = new JButton("Delete Shape");
-  //JLabel actionLabel = new JLabel("Actions (Select a shape in order to delete it): ");
+  JButton regionButton = new JButton("Region");
+  deleteButton = new JButton("Delete Shape");
   JButton deleteAll = new JButton("Delete All");
   JCheckBox fillBox = new JCheckBox("Enable/Disable fill");
   
@@ -386,11 +423,12 @@ public class GuiDelegate implements Observer {
   // TODO: press Enter or something else to add default size shape to canvas
   
   lineButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
+  triangleButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
   squareButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
   rectButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
   circleButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
   ellipseButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
-  hexButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
+  regionButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
   deleteAll.getAccessibleContext().setAccessibleDescription("Press Enter to delete all shapes.");
 
   drawPanel.setMode(Config.SELECT_MODE);
@@ -399,23 +437,49 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-    drawPanel.setMode(Config.DRAW_MODE);
-	drawPanel.setDrawMode(Config.DRAW_LINE);
-    drawPanel.drawDefaultSelectedShape();
-    
-    drawPanel.setMode(Config.SELECT_MODE);
+    if (drawDefaultOnClick) {
+    	drawPanel.setMode(Config.DRAW_MODE);
+    	drawPanel.setDrawMode(Config.DRAW_LINE);
+        drawPanel.drawDefaultSelectedShape();
+        
+        drawPanel.setMode(Config.SELECT_MODE);
+        loadedShape = null;
+    } else {
+    	loadedShape = new XLine();
+    }
+	
    }
+  });
+  
+  triangleButton.addActionListener(new ActionListener() {
+	  @Override
+	  public void actionPerformed(ActionEvent e) {
+		  if (drawDefaultOnClick) {
+			  drawPanel.setMode(Config.DRAW_MODE);
+			  drawPanel.setDrawMode(Config.DRAW_TRIANGLE);
+			  drawPanel.drawDefaultSelectedShape();
+			  
+			  drawPanel.setMode(Config.SELECT_MODE);
+		  } else {
+		    	loadedShape = new XTriangle();
+		    }
+	  }
+	  
   });
   
   squareButton.addActionListener(new ActionListener() {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-	drawPanel.setMode(Config.DRAW_MODE);
-	drawPanel.setDrawMode(Config.DRAW_SQUARE);
-    drawPanel.drawDefaultSelectedShape();
-    
-    drawPanel.setMode(Config.SELECT_MODE);
+	   if (drawDefaultOnClick) {
+			drawPanel.setMode(Config.DRAW_MODE);
+			drawPanel.setDrawMode(Config.DRAW_SQUARE);
+		    drawPanel.drawDefaultSelectedShape();
+		    
+		    drawPanel.setMode(Config.SELECT_MODE);
+	   } else {
+	    	loadedShape = new XSquare();
+	    }
    }
   });
 
@@ -423,11 +487,15 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-	drawPanel.setMode(Config.DRAW_MODE);
-    drawPanel.setDrawMode(Config.DRAW_RECT);
-    drawPanel.drawDefaultSelectedShape();
-    
-    drawPanel.setMode(Config.SELECT_MODE);
+	   if (drawDefaultOnClick) {
+		drawPanel.setMode(Config.DRAW_MODE);
+	    drawPanel.setDrawMode(Config.DRAW_RECT);
+	    drawPanel.drawDefaultSelectedShape();
+	    
+	    drawPanel.setMode(Config.SELECT_MODE);
+	   } else {
+	    	loadedShape = new XRect();
+	    }
    }
   });
 
@@ -435,11 +503,15 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-	drawPanel.setMode(Config.DRAW_MODE);
-	drawPanel.setDrawMode(Config.DRAW_CIRCLE);
-    drawPanel.drawDefaultSelectedShape();
-    
-    drawPanel.setMode(Config.SELECT_MODE);
+	   if (drawDefaultOnClick) {
+		drawPanel.setMode(Config.DRAW_MODE);
+		drawPanel.setDrawMode(Config.DRAW_CIRCLE);
+	    drawPanel.drawDefaultSelectedShape();
+	    
+	    drawPanel.setMode(Config.SELECT_MODE);
+	   } else {
+	    	loadedShape = new XCircle();
+	    }
    }
   });
 
@@ -447,15 +519,19 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-	drawPanel.setMode(Config.DRAW_MODE);
-	drawPanel.setDrawMode(Config.DRAW_ELLIPSE);
-    drawPanel.drawDefaultSelectedShape();
-    
-    drawPanel.setMode(Config.SELECT_MODE);
+	   if (drawDefaultOnClick) {
+		drawPanel.setMode(Config.DRAW_MODE);
+		drawPanel.setDrawMode(Config.DRAW_ELLIPSE);
+	    drawPanel.drawDefaultSelectedShape();
+	    
+	    drawPanel.setMode(Config.SELECT_MODE);
+	   } else {
+	    	loadedShape = new XEllipse();
+	    }
    }
   });
 
-  hexButton.addActionListener(new ActionListener() {
+  regionButton.addActionListener(new ActionListener() {
 
    @Override
    public void actionPerformed(ActionEvent e) {
@@ -470,7 +546,7 @@ public class GuiDelegate implements Observer {
   deleteButton.addActionListener(new ActionListener() {
 	  @Override
 	   public void actionPerformed(ActionEvent e) {
-		if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
+		  if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
 			model.removeShape(drawPanel.getSelectedXShape());
 			drawPanel.setSelectedXShape(null);
 			drawPanel.repaint();
@@ -478,21 +554,8 @@ public class GuiDelegate implements Observer {
 	  }
 });
   
-  Action delete = new AbstractAction() {
-	  public void actionPerformed(ActionEvent e) {
-		  if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
-				model.removeShape(drawPanel.getSelectedXShape());
-				drawPanel.setSelectedXShape(null);
-				drawPanel.repaint();
-			}
-	  }
-  };
-
-  drawPanel.getInputMap(drawPanel.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("BACK_SPACE"), "backspace");
-  drawPanel.getActionMap().put("backspace", delete);
-
+  
   fillBox.addItemListener(new ItemListener() {
-
    @Override
    public void itemStateChanged(ItemEvent e) {
     if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -514,31 +577,137 @@ public class GuiDelegate implements Observer {
    }
   });
   
-  //leftBar.add(modeLabel);
-  //leftBar.add(selectButton);
-  //leftBar.add(drawButton);
-  //leftBar.addSeparator();
-  //leftBar.add(fillBox);
-  //leftBar.addSeparator();
-  //leftBar.add(label);
+  
+  
+  /* ACTIONS */
+  /*
+  Action delete = new AbstractAction() {
+	  public void actionPerformed(ActionEvent e) {
+		  if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
+				model.removeShape(drawPanel.getSelectedXShape());
+				drawPanel.setSelectedXShape(null);
+				drawPanel.repaint();
+			}
+	  }
+  };
+  
+  Action moveUpAction = new AbstractAction() {
+	  public void actionPerformed(ActionEvent e) {
+		  //if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
+				System.out.println("Move up");
+			//}
+	  }
+  };
+  */
+  
+  Action getNextShapeAction = new AbstractAction() {
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
+			System.out.println("Tab hit");
+		}
+	}
+	  
+  };
+  
+  /* KEY BINDINGS */
+  
+  // delete
+  drawPanel.getInputMap(drawPanel.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "delete");
+  drawPanel.getActionMap().put("delete", new Delete(drawPanel));
+  
+  // move shapes with W, A, S, D (for now)
+  drawPanel.getInputMap(drawPanel.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_W, 0), "move up");;
+  drawPanel.getActionMap().put("move up", new Move(drawPanel, 0));
+  
+  drawPanel.getInputMap(drawPanel.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), "move down");;
+  drawPanel.getActionMap().put("move down", new Move(drawPanel, 1));
+  
+  drawPanel.getInputMap(drawPanel.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "move left");;
+  drawPanel.getActionMap().put("move left", new Move(drawPanel, 3));
+  
+  drawPanel.getInputMap(drawPanel.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), "move right");;
+  drawPanel.getActionMap().put("move right", new Move(drawPanel, 4));
+  
+  // tab traversal of shapes
+  drawPanel.getInputMap(drawPanel.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), "next shape");
+  drawPanel.getActionMap().put("next shape", getNextShapeAction);
+  
+  drawPanel.addMouseListener(new MouseListener() {
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+		// see if a shape is loaded
+		if (loadedShape != null) {
+			// deposit loaded shape to mouse coordinates
+			loadedShape.construct(arg0.getX() - 100, arg0.getY() - 100, arg0.getX(), arg0.getY());
+			model.addShape(loadedShape);
+			loadedShape = null;
+		
+		}
+		
+		if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
+			deleteButton.setEnabled(true);
+			fillButton.setEnabled(true);
+		} 
+		else {
+			deleteButton.setEnabled(false);
+			fillButton.setEnabled(false);
+		
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+	}
+  
+  });
+  
   leftBar.add(lineButton);
+  leftBar.add(triangleButton);
   leftBar.add(squareButton);
   leftBar.add(rectButton);
   leftBar.add(circleButton);
   leftBar.add(ellipseButton);
-  leftBar.add(hexButton);
+  leftBar.add(regionButton);
   leftBar.add(deleteButton);
-  //deleteButton.setVisible(false);
   leftBar.add(deleteAll);
+  
+  deleteButton.setEnabled(false);
+  deleteAll.setEnabled(false);
  }
 
  /**
   * Setup bottom bar of the application.
   */
  private void setupDownBar() {
-  JLabel label = new JLabel("Select color: ");
+  JLabel colorLabel = new JLabel("Select color: ");
   JButton colorButton = new JButton();
-  JButton fillButton = new JButton("Fill/unfill selected shape");
+  fillButton = new JButton("Fill/unfill selected shape");
+  
+  JLabel borderLabel = new JLabel("Select border thickness: ");
+  String[] borderOptions = { "1px", "2px", "5px"};
+  JComboBox borderButton = new JComboBox<Object>(borderOptions);
   
   //JCheckBox modeBox = new JCheckBox("Enable drawing or use Alt+D to toggle");
   // use Alt+D to enable/disable draw mode
@@ -568,6 +737,26 @@ public class GuiDelegate implements Observer {
     }
    }
   });
+  
+  borderButton.addActionListener(new ActionListener() {
+
+	   @Override
+	   public void actionPerformed(ActionEvent e) {
+	    if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
+	    	switch ((String)borderButton.getSelectedItem()) {
+	    	case "1px":
+	    		model.setBorder(drawPanel.getSelectedXShape(), 1);
+	    		break;
+	    	case "2px":
+	    		model.setBorder(drawPanel.getSelectedXShape(), 2);
+	    		break;
+	    	case "5px":
+	    		model.setBorder(drawPanel.getSelectedXShape(), 5);
+	    		break;
+	    	}
+	    }
+	   }
+	  });
 
   /*
   modeBox.addItemListener(new ItemListener() {
@@ -585,12 +774,15 @@ public class GuiDelegate implements Observer {
 	   }
 	  });
   */
-  downBar.add(label);
+  downBar.add(colorLabel);
   downBar.add(colorButton);
   downBar.addSeparator();
   downBar.add(fillButton);
+  downBar.add(borderLabel);
+  downBar.add(borderButton);
   //downBar.add(modeBox);
 
+  fillButton.setEnabled(false);
  }
 
  /**
@@ -622,6 +814,7 @@ public class GuiDelegate implements Observer {
     else {
      undo.setEnabled(true);
     }
+    
    }
   });
  }
@@ -634,4 +827,64 @@ private void setupEnterAction(String componentName){
 	    im.put(KeyStroke.getKeyStroke("pressed ENTER"), pressedAction);
 	    im.put(KeyStroke.getKeyStroke("released ENTER"), releasedAction);
 	}
+}
+
+class Delete extends AbstractAction {
+	   DrawPanel drawPanel;
+		
+	   public Delete(DrawPanel dp) {
+	      System.out.println("Delete created");
+	      drawPanel = dp;
+	   }
+
+	   @Override
+	   public void actionPerformed(ActionEvent arg0) {
+	      System.out.println("Delete called");
+	      if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
+				drawPanel.getModel().removeShape(drawPanel.getSelectedXShape());
+				drawPanel.setSelectedXShape(null);
+				drawPanel.repaint();
+			}
+	   }
+}
+
+class Move extends AbstractAction {
+	DrawPanel drawPanel;
+	int direction;
+	XShape selectedXShape;
+	
+	public Move(DrawPanel dp, int dir) {
+		drawPanel = dp;
+		direction = dir;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// 0 = up, 1 = down, 3 = left, 4 = right
+		selectedXShape = drawPanel.getSelectedXShape();
+		System.out.println(selectedXShape.getCoordinates());
+		
+		System.out.println("Direction: " + direction);
+		 if ((selectedXShape != null) && !selectedXShape.equals(null)) {
+			 int x = selectedXShape.getX1() + (selectedXShape.getX2() - selectedXShape.getX1())/2;
+			 int y = selectedXShape.getY1() + (selectedXShape.getY2() - selectedXShape.getY1())/2;
+			 System.out.println(x + ", " + y);
+			 
+			 drawPanel.setDrag(true);
+			 
+			 if (direction == 0) {
+				 drawPanel.moveXShape(x, y - 1);
+			 } else if (direction == 1) {
+				 drawPanel.moveXShape(x, y + 1);
+			 } else if (direction == 3) {
+				 drawPanel.moveXShape(x - 1, y);
+			 } else if (direction == 4) {
+				 drawPanel.moveXShape(x + 1, y);
+			 }
+			 
+			 drawPanel.repaint();
+			 drawPanel.setDrag(false);
+			}
+	}
+	
 }

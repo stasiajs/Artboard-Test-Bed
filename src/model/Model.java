@@ -172,7 +172,23 @@ public class Model extends Observable {
    xshape.setFill(fill);
    setChanged();
    notifyObservers();
+   
   }
+ }
+ 
+ /**
+  * Sets the border thickness of a specified XShape and notifies the observers.
+  * 
+  * @param xshape the XShape to change the border thickness
+  * @param border the new border thickness
+  */
+ public void setBorder(XShape xshape, int border) {
+	 if (shapeList.contains(xshape)) {
+		   addUndoAction();
+		   xshape.setBorderWidth(border);;
+		   setChanged();
+		   notifyObservers();
+	}
  }
 
  /**
