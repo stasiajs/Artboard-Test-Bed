@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -38,6 +39,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -53,6 +56,7 @@ import shapes.XLine;
 import shapes.XRect;
 import shapes.XShape;
 import shapes.XSquare;
+import shapes.XText;
 import shapes.XTriangle;
 
 /**
@@ -121,6 +125,8 @@ public class GuiDelegate implements Observer {
   setupComponents();
   model.addObserver(this);
   drawPanel.setFocusable(true);
+  
+  drawPanel.setLayout(null);
  }
 
  /**
@@ -415,13 +421,14 @@ public class GuiDelegate implements Observer {
   JButton circleButton = new JButton("Circle");
   JButton ellipseButton = new JButton("Ellipse");
   JButton regionButton = new JButton("Region");
+  JButton textButton = new JButton("Text");
   deleteButton = new JButton("Delete Shape");
   JButton deleteAll = new JButton("Delete All");
   JCheckBox fillBox = new JCheckBox("Enable/Disable fill");
   
 
   // TODO: press Enter or something else to add default size shape to canvas
-  
+  // TODO: this is only for the mode that's add-shape-on-click
   lineButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
   triangleButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
   squareButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
@@ -429,6 +436,7 @@ public class GuiDelegate implements Observer {
   circleButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
   ellipseButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
   regionButton.getAccessibleContext().setAccessibleDescription("Press Enter to place shape.");
+  textButton.getAccessibleContext().setAccessibleDescription("Press Enter to place text.");
   deleteAll.getAccessibleContext().setAccessibleDescription("Press Enter to delete all shapes.");
 
   drawPanel.setMode(Config.SELECT_MODE);
@@ -535,13 +543,33 @@ public class GuiDelegate implements Observer {
 
    @Override
    public void actionPerformed(ActionEvent e) {
-	drawPanel.setMode(Config.DRAW_MODE);
-	drawPanel.setDrawMode(Config.DRAW_HEX);
-    drawPanel.drawDefaultSelectedShape();
-    
-    drawPanel.setMode(Config.SELECT_MODE);
+	if (drawDefaultOnClick) {
+		drawPanel.setMode(Config.DRAW_MODE);
+		drawPanel.setDrawMode(Config.DRAW_HEX);
+	    drawPanel.drawDefaultSelectedShape();
+	    
+	    drawPanel.setMode(Config.SELECT_MODE);
+	} else {
+    	//loadedShape = new XRegion();
+    }
    }
   });
+  
+  textButton.addActionListener(new ActionListener() {
+
+	   @Override
+	   public void actionPerformed(ActionEvent e) {
+		if (drawDefaultOnClick) {
+			drawPanel.setMode(Config.DRAW_MODE);
+			drawPanel.setDrawMode(Config.DRAW_HEX);
+		    drawPanel.drawDefaultSelectedShape();
+		    
+		    drawPanel.setMode(Config.SELECT_MODE);
+		} else {
+	    	loadedShape = new XText();
+	    }
+	   }
+	  });
   
   deleteButton.addActionListener(new ActionListener() {
 	  @Override
@@ -640,8 +668,17 @@ public class GuiDelegate implements Observer {
 	public void mouseClicked(MouseEvent arg0) {
 		// see if a shape is loaded
 		if (loadedShape != null) {
-			// deposit loaded shape to mouse coordinates
-			loadedShape.construct(arg0.getX() - 100, arg0.getY() - 100, arg0.getX(), arg0.getY());
+			// if it's text, create text input field where the mouse clicked
+			if (loadedShape instanceof XText) {
+				JTextPane textPane = new JTextPane();
+				loadedShape.construct(arg0.getX(), arg0.getY(), arg0.getX() + 100, arg0.getY() + 100);
+				((XText) loadedShape).setTextPane(textPane);
+				drawPanel.add(textPane);
+			} else {
+				// deposit loaded shape to mouse coordinates
+				loadedShape.construct(arg0.getX() - 100, arg0.getY() - 100, arg0.getX(), arg0.getY());
+			}
+			
 			model.addShape(loadedShape);
 			loadedShape = null;
 		
@@ -690,6 +727,7 @@ public class GuiDelegate implements Observer {
   leftBar.add(circleButton);
   leftBar.add(ellipseButton);
   leftBar.add(regionButton);
+  leftBar.add(textButton);
   leftBar.add(deleteButton);
   leftBar.add(deleteAll);
   
@@ -705,9 +743,8 @@ public class GuiDelegate implements Observer {
   JButton colorButton = new JButton();
   fillButton = new JButton("Fill/unfill selected shape");
   
-  JLabel borderLabel = new JLabel("Select border thickness: ");
-  String[] borderOptions = { "1px", "2px", "5px"};
-  JComboBox borderButton = new JComboBox<Object>(borderOptions);
+  JLabel borderLabel = new JLabel("Input border thickness: ");
+  JTextField borderButton = new JTextField(1);
   
   //JCheckBox modeBox = new JCheckBox("Enable drawing or use Alt+D to toggle");
   // use Alt+D to enable/disable draw mode
@@ -743,16 +780,11 @@ public class GuiDelegate implements Observer {
 	   @Override
 	   public void actionPerformed(ActionEvent e) {
 	    if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
-	    	switch ((String)borderButton.getSelectedItem()) {
-	    	case "1px":
-	    		model.setBorder(drawPanel.getSelectedXShape(), 1);
-	    		break;
-	    	case "2px":
-	    		model.setBorder(drawPanel.getSelectedXShape(), 2);
-	    		break;
-	    	case "5px":
-	    		model.setBorder(drawPanel.getSelectedXShape(), 5);
-	    		break;
+	    	try {
+	    		int newBorder = Integer.parseInt(borderButton.getText());
+	    		model.setBorder(drawPanel.getSelectedXShape(), newBorder);
+	    	} catch (NumberFormatException e1) {
+	    		e1.printStackTrace();
 	    	}
 	    }
 	   }
@@ -862,9 +894,9 @@ class Move extends AbstractAction {
 	public void actionPerformed(ActionEvent arg0) {
 		// 0 = up, 1 = down, 3 = left, 4 = right
 		selectedXShape = drawPanel.getSelectedXShape();
-		System.out.println(selectedXShape.getCoordinates());
+		//System.out.println(selectedXShape.getCoordinates());
 		
-		System.out.println("Direction: " + direction);
+		//System.out.println("Direction: " + direction);
 		 if ((selectedXShape != null) && !selectedXShape.equals(null)) {
 			 int x = selectedXShape.getX1() + (selectedXShape.getX2() - selectedXShape.getX1())/2;
 			 int y = selectedXShape.getY1() + (selectedXShape.getY2() - selectedXShape.getY1())/2;

@@ -18,12 +18,15 @@ public class XTriangle extends XShape {
 		
 		Path2D.Double path = new Path2D.Double();
 
-		path.moveTo(firstX, firstY);
-		path.lineTo(tWidth - firstX, firstY);
-		path.lineTo(tWidth / 2.0, tHeight / 4.0);
+		path.moveTo(x2, y2);
+		path.lineTo(x1, y2);
+		//path.lineTo(x2 - (tWidth / 2.0), tHeight / 4.0);
+		path.lineTo(x2 - (tWidth / 2.0), y1 * (2.0 / Math.sqrt(3)));
+		
 		//path.moveTo(x1 + (tWidth/2), tHeight/2);
 		//path.lineTo((tWidth/2),(tHeight/2)-50);
 		//path.lineTo((tWidth/2)-50, tHeight/2);
+		
 		path.closePath();
 
 		 updateCoordinates(x1, y1, x2, y2);

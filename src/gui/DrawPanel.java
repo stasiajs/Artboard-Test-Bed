@@ -32,6 +32,7 @@ import shapes.XLine;
 import shapes.XRect;
 import shapes.XShape;
 import shapes.XSquare;
+import shapes.XText;
 import shapes.XTriangle;
 /**
  * The Class DrawPanel draws all the shapes of the shape list on a JPanel. It is also responsible for displaying changes regarding resizing and moving.
@@ -151,15 +152,23 @@ public class DrawPanel extends JPanel {
 
     // reset selection at mouse click
     selectedXShape = null;
-    // when mouse is clicked in select mode, go through the list of shapes and get a shape if one was hit
-    //if (mode == Config.SELECT_MODE) {
-     selectedXShape = model.getXShapeAtPos(e.getX(), e.getY());
+
+    selectedXShape = model.getXShapeAtPos(e.getX(), e.getY());
 
      // show the resize boxes of the selected shape
      if ((selectedXShape != null) && !selectedXShape.equals(null)) {
       resizeBoxes = getSelections(selectedXShape);
-     //}
-    }
+
+      // if the user double-clicks a text box, set it to editable
+      if (selectedXShape instanceof XText) {
+    	  if (e.getClickCount() == 2) {
+    		  ((XText) selectedXShape).setEditable(true);
+    	  } else {
+    		  ((XText) selectedXShape).setEditable(false);
+    	  }
+     }
+     
+     }
    }
 
    @Override
@@ -177,6 +186,7 @@ public class DrawPanel extends JPanel {
       selectedXShape.updateBounds();
       resizeBoxes = getSelections(selectedXShape);
      // getTTSDescription();
+      
      }
     }
 
@@ -368,8 +378,7 @@ public class DrawPanel extends JPanel {
    }
    g.draw(drawXShape.getShape());
   }
-  g.drawString("Hello world", 70, 20);
-
+  
   // add the selection marks if applicable
   if (!export && (resizeBoxes != null) && !resizeBoxes.equals(null) && (selectedXShape != null)
     && !selectedXShape.equals(null)) {
@@ -495,7 +504,7 @@ public class DrawPanel extends JPanel {
 	          drawXShape.construct(176, 206, 368, 329);
 		      model.addShape(drawXShape);
 	          break;
-
+	          
 	      case Config.DRAW_HEX:
 	          drawXShape = new XHexagon();
 	          drawXShape.setColor(color);

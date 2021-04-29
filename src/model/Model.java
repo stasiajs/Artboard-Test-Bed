@@ -13,6 +13,7 @@ import java.util.Observable;
 import java.util.Stack;
 
 import shapes.XShape;
+import shapes.XText;
 
 /**
  * The Class Model describes the model of the application. The model holds an ArrayList with the Shapes that can be drawn. Also the model .
@@ -105,7 +106,7 @@ public class Model extends Observable {
   for (int i = 0; i < shapeList.size(); i++) {
    if (shapeList.get(i).isClicked(x, y)) {
     selectedXShape = shapeList.get(i);
-   }
+   } 
   }
   return selectedXShape;
  }
