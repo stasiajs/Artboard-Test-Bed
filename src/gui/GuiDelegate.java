@@ -99,6 +99,14 @@ public class GuiDelegate implements Observer {
  private JButton deleteButton;
  
  private JButton fillButton;
+ 
+ private JLabel borderLabel;
+ 
+ private JTextField borderButton;
+ 
+ private JLabel fontLabel;
+ 
+ private JTextField fontField;
 
  /** Booleans for custom settings */
  private boolean defaultSettingsOn = true;
@@ -687,10 +695,28 @@ public class GuiDelegate implements Observer {
 		if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
 			deleteButton.setEnabled(true);
 			fillButton.setEnabled(true);
+			
+			if (drawPanel.getSelectedXShape() instanceof XText) {
+				fontLabel.setEnabled(true);
+				fontField.setEnabled(true);
+				
+				borderLabel.setEnabled(false);
+				borderButton.setEnabled(false);
+			} else {
+				fontLabel.setEnabled(false);
+				fontField.setEnabled(false);
+				
+				borderLabel.setEnabled(true);
+				borderButton.setEnabled(true);
+			}
 		} 
 		else {
 			deleteButton.setEnabled(false);
 			fillButton.setEnabled(false);
+			fontLabel.setEnabled(false);
+			fontField.setEnabled(false);
+			borderLabel.setEnabled(false);
+			borderButton.setEnabled(false);
 		
 		}
 	}
@@ -743,8 +769,11 @@ public class GuiDelegate implements Observer {
   JButton colorButton = new JButton();
   fillButton = new JButton("Fill/unfill selected shape");
   
-  JLabel borderLabel = new JLabel("Input border thickness: ");
-  JTextField borderButton = new JTextField(1);
+  borderLabel = new JLabel("Input border thickness: ");
+  borderButton = new JTextField(1);
+  
+  fontLabel = new JLabel("Input font size: ");
+  fontField = new JTextField(1);
   
   //JCheckBox modeBox = new JCheckBox("Enable drawing or use Alt+D to toggle");
   // use Alt+D to enable/disable draw mode
@@ -789,6 +818,21 @@ public class GuiDelegate implements Observer {
 	    }
 	   }
 	  });
+  
+  fontField.addActionListener(new ActionListener() {
+
+	   @Override
+	   public void actionPerformed(ActionEvent e) {
+	    if ((drawPanel.getSelectedXShape() != null) && !drawPanel.getSelectedXShape().equals(null)) {
+	    	try {
+	    		int newFont = Integer.parseInt(fontField.getText());
+	    		model.setFontSize(drawPanel.getSelectedXShape(), newFont);
+	    	} catch (NumberFormatException e1) {
+	    		e1.printStackTrace();
+	    	}
+	    }
+	   }
+	  });
 
   /*
   modeBox.addItemListener(new ItemListener() {
@@ -812,9 +856,15 @@ public class GuiDelegate implements Observer {
   downBar.add(fillButton);
   downBar.add(borderLabel);
   downBar.add(borderButton);
+  downBar.add(fontLabel);
+  downBar.add(fontField);;
   //downBar.add(modeBox);
 
   fillButton.setEnabled(false);
+  borderLabel.setEnabled(false);
+  borderButton.setEnabled(false);
+  fontLabel.setEnabled(false);
+  fontField.setEnabled(false);
  }
 
  /**

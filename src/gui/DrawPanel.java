@@ -162,9 +162,7 @@ public class DrawPanel extends JPanel {
       // if the user double-clicks a text box, set it to editable
       if (selectedXShape instanceof XText) {
     	  if (e.getClickCount() == 2) {
-    		  ((XText) selectedXShape).setEditable(true);
-    	  } else {
-    		  ((XText) selectedXShape).setEditable(false);
+    		  //((XText) selectedXShape).setEditable(true);
     	  }
      }
      

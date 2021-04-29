@@ -17,7 +17,9 @@ public class XText extends XShape {
 
 	@Override
 	public void construct(int x1, int y1, int x2, int y2) {
-		font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+		if (font == null) {
+			font = new Font(Font.SANS_SERIF, Font.PLAIN, 12);
+		}
 		
 		// make a rectangle so that the whole thing doesn't break
 		/*
@@ -40,10 +42,16 @@ public class XText extends XShape {
 	public void paint(Graphics2D g) {
 		setText(textPane.getText());
 		
+		if ((getColor() != null) && !getColor().equals(null)) {
+			   g.setColor(getColor());
+		}
+		
+		//textPane.setVisible(textPane.isEditable());
+		//System.out.println("Visible: " + textPane.isEditable());
+		
 		if (text.length() > 0) {
 			FontRenderContext frc = g.getFontRenderContext();
 			TextLayout layout = new TextLayout(text, font, frc);
-			
 			textPane.setVisible(false);
 			// draw text in the middle of the rectangle:
 			//float x = x1 + width/2;
